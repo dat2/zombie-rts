@@ -1,0 +1,25 @@
+{
+  "name": "zombie-rts",
+  "version": "0.0.0",
+  "authors": [
+    "Nicholas Dujay <nickdujay@gmail.com>"
+  ],
+  "description": "A zombie game",
+  "main": "index.html",
+  "keywords": [
+    "zombie",
+    "rts"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "~3.2.0",
+    "phaser": "~2.1.1"
+  }
+}
