@@ -4,6 +4,13 @@ var gulp = require('gulp'),
 var mainBowerFiles = require('main-bower-files'),
   path = require('path');
 
+gulp.task('imagemin', function() {
+  return gulp.src('assets/images/*')
+    .pipe(g.changed('assets/images'))
+    .pipe(g.imagemin())
+    .pipe(gulp.dest('assets/images'));
+});
+
 gulp.task('index', function() {
   return gulp.src('index.html')
     .pipe(g.inject(
@@ -30,6 +37,7 @@ gulp.task('index', function() {
 gulp.task('watch', ['index'], function() {
   g.livereload.listen();
   gulp.watch('index.html', ['index']);
+  gulp.watch('assets/images', ['imagemin']);
 
-  gulp.watch(['index.html', 'scripts/*', 'styles/*', 'vendor/*']).on('change', g.livereload.changed);
+  gulp.watch(['index.html', 'scripts/*', 'styles/*', 'vendor/*', 'assets/']).on('change', g.livereload.changed);
 });
