@@ -1,9 +1,11 @@
 export default function start() {
+  var Phaser = window.Phaser;
+
   var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
-    preload: preload,
-    create: create,
-    update: update,
-    render: render
+    preload,
+    create,
+    update,
+    render
   });
   var sprite,
     moveToPosition;
@@ -23,10 +25,8 @@ export default function start() {
     sprite.inputEnabled = true;
     sprite.events.onInputDown.add(listener, this);
 
-    moveToPosition = {
-      x: sprite.x,
-      y: sprite.y
-    };
+    var { x, y } = sprite;
+    moveToPosition = { x, y };
   }
 
   function listener() {
@@ -35,11 +35,8 @@ export default function start() {
 
   function update() {
     if(game.input.activePointer.isDown) {
-      console.log(game.input.activePointer);
-      moveToPosition = {
-        x: game.input.activePointer.x,
-        y: game.input.activePointer.y
-      };
+      var { x, y } = game.input.activePointer;
+      moveToPosition = { x, y };
     }
 
     if(game.physics.arcade.distanceToXY(sprite, moveToPosition.x, moveToPosition.y) > 6) {

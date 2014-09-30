@@ -16,6 +16,7 @@ gulp.task('clean', function(done) {
 gulp.task('scripts', function() {
   return gulp.src('scripts/*.js')
     .pipe(g.plumber())
+    .pipe(g.es6Transpiler())
     .pipe(g.es6ModuleTranspiler({
       type: 'amd',
       // prefix: 'scripts/'
