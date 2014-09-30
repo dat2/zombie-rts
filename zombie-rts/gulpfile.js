@@ -2,11 +2,16 @@ var gulp = require('gulp'),
   g = require('gulp-load-plugins')();
 
 var mainBowerFiles = require('main-bower-files'),
-  path = require('path');
+  del = require('del');
 
 var paths = {
   devDir: '.tmp/'
 };
+
+gulp.task('clean', function(done) {
+  del.sync(paths.devDir);
+  done();
+});
 
 gulp.task('scripts', function() {
   return gulp.src('scripts/*.js')
@@ -25,7 +30,7 @@ gulp.task('imagemin', function() {
     .pipe(gulp.dest('assets/images'));
 });
 
-gulp.task('index', function() {
+gulp.task('index', ['clean', 'scripts'], function() {
   return gulp.src('index.html')
     .pipe(g.inject(
       gulp.src([paths.devDir + '*', 'styles/*'], {
@@ -45,6 +50,7 @@ gulp.task('index', function() {
         addPrefix: '/zombie-rts'
       }
     ))
+    //overwrite index
     .pipe(gulp.dest('.'));
 });
 
@@ -54,5 +60,5 @@ gulp.task('watch', ['index', 'scripts'], function() {
   gulp.watch('assets/images', ['imagemin']);
   gulp.watch('scripts/*', ['scripts']);
 
-  gulp.watch(['index.html', paths.devDir, 'styles/*', 'vendor/*', 'assets/']).on('change', g.livereload.changed);
+  gulp.watch(['index.html', paths.devDir + '*', 'styles/*', 'vendor/*', 'assets/*']).on('change', g.livereload.changed);
 });
