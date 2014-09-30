@@ -9,7 +9,6 @@
   <!-- endinject -->
 
   <!-- bower:css -->
-  <link rel="stylesheet" href="/zombie-rts/bower_components/bootstrap/dist/css/bootstrap.css">
   <!-- endinject -->
 </head>
 <body>
@@ -17,16 +16,21 @@
   <!-- livereload -->
   <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
 
+  <!-- almond -->
+  <script src="/zombie-rts/bower_components/almond/almond.js"></script>
+
   <!-- vendor:js -->
-  <script src="/zombie-rts/bower_components/jquery/dist/jquery.js"></script>
   <script src="/zombie-rts/bower_components/phaser/build/phaser.js"></script>
-  <script src="/zombie-rts/bower_components/bootstrap/dist/js/bootstrap.js"></script>
-  <script src="/zombie-rts/vendor/pathfinding-browser.min.js"></script>
+  <script src="/zombie-rts/bower_components/easystarjs/bin/easystar-0.1.13.min.js"></script>
+  <script src="/zombie-rts/bower_components/phaser-plugin-easystar/bin/phaser_pathfinding-0.2.0.min.js"></script>
   <!-- endinject -->
 
   <!-- app:js -->
-  <script src="/zombie-rts/scripts/finder.js"></script>
-  <script src="/zombie-rts/scripts/main.js"></script>
+  <script src="/zombie-rts/.tmp/main.js"></script>
   <!-- endinject -->
+
+  <script>
+    window.game = require('main')['default']();
+  </script>
 </body>
 </html>
