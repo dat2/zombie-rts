@@ -19,7 +19,21 @@
     "tests"
   ],
   "dependencies": {
-    "bootstrap": "~3.2.0",
-    "phaser": "~2.1.1"
+    "phaser": "~2.1.1",
+    "almond": "~0.3.0",
+    "easystarjs": "~0.1.12",
+    "phaser-plugin-easystar": "~0.2.0",
+    "traceur": "~0.0.66"
+  },
+  "overrides": {
+    "almond": {
+      "ignore": true
+    },
+    "easystarjs": {
+      "main": "./bin/easystar-0.1.13.min.js"
+    },
+    "phaser-plugin-easystar": {
+      "main": "./bin/phaser_pathfinding-0.2.0.min.js"
+    }
   }
 }
