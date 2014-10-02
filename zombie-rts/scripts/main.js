@@ -1,5 +1,5 @@
-var easystar = require('easystar');
 import { Unit } from 'Unit';
+import { GameState } from 'GameState';
 
 export default function start() {
   var Phaser = window.Phaser;
@@ -10,21 +10,14 @@ export default function start() {
     update,
     render
   });
-  var sprite,
-    grid;
-
-  var numTilesHorizontal = 5;
-  var numTilesVertical = 5;
-
-  //automatically set some (visual) tiles
-  var { width, height } = game;
-  var tileWidth = width / numTilesHorizontal;
-  var tileHeight = height / numTilesVertical;
+  var sprite;
 
   var unit;
+  var state = new GameState(game);
 
   var setPosOnce = false;
 
+  var { width: tileWidth, height: tileHeight } = state.getPixelDimensionsPerTile();
 
   function tilesToPixels({ x, y }) {
     return {
@@ -42,26 +35,12 @@ export default function start() {
   function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    //create data for the tile
-    var tileArray = [
-      [0,1,0,0,1],
-      [0,0,0,0,1],
-      [1,1,0,0,0],
-      [1,1,0,1,1],
-      [0,1,0,0,0]
-    ];
-
-    for(let row = 0; row < numTilesVertical; row++) {
-      for(let col = 0; col < numTilesHorizontal; col++) {
-        game.add.sprite(tileWidth * col, tileHeight * row, 'grass' + (tileArray[row][col] === 1 ? '2' : ''));
+    console.log(state);
+    for(let row = 0; row < state.tiles.vertical; row++) {
+      for(let col = 0; col < state.tiles.horizontal; col++) {
+        game.add.sprite(tileWidth * col, tileHeight * row, 'grass' + (state.tileArray[row][col] === 1 ? '2' : ''));
       }
     }
-
-    //create a grid
-    grid = new easystar.js();
-    grid.setGrid(tileArray);
-    grid.setAcceptableTiles([0]);
-    // grid.enableDiagonals();
 
     //player
     unit = new Unit({x: 1, y: 1});
@@ -74,11 +53,6 @@ export default function start() {
     sprite.inputEnabled = true;
   }
 
-  function setCurPos() {
-    var { x: spriteX, y: spriteY } = sprite;
-    curPos.x = Math.floor(spriteX / tileWidth);
-    curPos.y = Math.floor(spriteY / tileHeight);
-    console.log(curPos);
   function setPosition({x, y}) {
     var moveX = Math.floor(x / tileWidth);
     var moveY = Math.floor(y / tileHeight);
