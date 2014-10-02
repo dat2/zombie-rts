@@ -1,4 +1,5 @@
 var easystar = require('easystar');
+import { Unit } from 'Unit';
 
 export default function start() {
   var Phaser = window.Phaser;
@@ -10,7 +11,6 @@ export default function start() {
     render
   });
   var sprite,
-    moveToPosition,
     grid;
 
   var numTilesHorizontal = 5;
@@ -21,14 +21,10 @@ export default function start() {
   var tileWidth = width / numTilesHorizontal;
   var tileHeight = height / numTilesVertical;
 
-  var curPos = {
-    x: 1,
-    y: 1
-  };
+  var unit;
 
   var setPosOnce = false;
 
-  var pathQueue = [];
 
   function tilesToPixels({ x, y }) {
     return {
@@ -68,16 +64,14 @@ export default function start() {
     // grid.enableDiagonals();
 
     //player
-    var { x: startX, y: startY } = tilesToPixels(curPos);
+    unit = new Unit({x: 1, y: 1});
+    var { x: startX, y: startY } = tilesToPixels(unit.position);
     sprite = game.add.sprite(startX, startY, 'star');
     sprite.anchor.set(0.5);
 
     game.physics.arcade.enable(sprite);
 
     sprite.inputEnabled = true;
-
-    var { x, y } = sprite;
-    moveToPosition = { x, y };
   }
 
   function setCurPos() {
@@ -85,11 +79,17 @@ export default function start() {
     curPos.x = Math.floor(spriteX / tileWidth);
     curPos.y = Math.floor(spriteY / tileHeight);
     console.log(curPos);
+  function setPosition({x, y}) {
+    var moveX = Math.floor(x / tileWidth);
+    var moveY = Math.floor(y / tileHeight);
+    unit.moveTo({x, y});
 
     setPosOnce = true;
   }
 
   function update() {
+
+    //if they press the mouse, find a path to the nearest tile
     if(game.input.activePointer.isDown) {
       var { x, y } = game.input.activePointer;
 
@@ -98,32 +98,28 @@ export default function start() {
         y: Math.floor(y / tileHeight)
       };
 
-      if(pathQueue.length === 0) {
-        grid.findPath(curPos.x, curPos.y, tile.x, tile.y, function(path) {
-          path.shift();
-          pathQueue = pathQueue.concat(path);
-          console.log(pathQueue);
-        });
-        grid.calculate();
-      }
+      unit.findPath(state.grid, tile);
     }
+
+    //pixel coords outside of unit
+    //should i move inside unit?
+    var moveToPosition = tilesToPixels(unit.position);
 
     if(game.physics.arcade.distanceToXY(sprite, moveToPosition.x, moveToPosition.y) > 6) {
       game.physics.arcade.moveToObject(sprite, moveToPosition, 300);
       setPosOnce = false;
     } else {
+
       sprite.body.velocity.set(0);
       if(!setPosOnce) {
-        setCurPos();
+        setPosition(sprite);
       }
 
-    if(pathQueue.length > 0) {
-      var move = pathQueue.shift();
-      if(move !== undefined) {
-        moveToPosition = tilesToPixels(move);
+      if(unit.pathQueue.length > 0) {
+        if(unit.iterateOverPath()) {
+          moveToPosition = tilesToPixels(unit.position);
+        }
       }
-    }
-
     }
   }
 
