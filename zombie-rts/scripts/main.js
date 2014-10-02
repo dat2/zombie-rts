@@ -17,15 +17,6 @@ export default function start() {
 
   var setPosOnce = false;
 
-  var { width: tileWidth, height: tileHeight } = state.getPixelDimensionsPerTile();
-
-  function tilesToPixels({ x, y }) {
-    return {
-      x: (x + 1) * (tileWidth)  - (tileWidth / 2),
-      y: (y + 1) * (tileHeight) - (tileHeight / 2)
-    };
-  }
-
   function preload() {
     game.load.image('star', 'assets/images/star.png');
     game.load.image('grass', 'assets/images/grass.jpg');
@@ -35,7 +26,7 @@ export default function start() {
   function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    console.log(state);
+    var { width: tileWidth, height: tileHeight } = state.getPixelDimensionsPerTile();
     for(let row = 0; row < state.tiles.vertical; row++) {
       for(let col = 0; col < state.tiles.horizontal; col++) {
         game.add.sprite(tileWidth * col, tileHeight * row, 'grass' + (state.tileArray[row][col] === 1 ? '2' : ''));
@@ -44,7 +35,7 @@ export default function start() {
 
     //player
     unit = new Unit({x: 1, y: 1});
-    var { x: startX, y: startY } = tilesToPixels(unit.position);
+    var { x: startX, y: startY } = state.tileCoordsToPixelCoords(unit.position);
     sprite = game.add.sprite(startX, startY, 'star');
     sprite.anchor.set(0.5);
 
@@ -53,10 +44,9 @@ export default function start() {
     sprite.inputEnabled = true;
   }
 
-  function setPosition({x, y}) {
-    var moveX = Math.floor(x / tileWidth);
-    var moveY = Math.floor(y / tileHeight);
-    unit.moveTo({x, y});
+  function setPosition(pixelPos) {
+    var tilePos = state.pixelCoordsToTileCoords(pixelPos);
+    unit.moveTo(tilePos);
 
     setPosOnce = true;
   }
@@ -65,22 +55,16 @@ export default function start() {
 
     //if they press the mouse, find a path to the nearest tile
     if(game.input.activePointer.isDown) {
-      var { x, y } = game.input.activePointer;
-
-      var tile = {
-        x: Math.floor(x / tileWidth),
-        y: Math.floor(y / tileHeight)
-      };
-
-      unit.findPath(state.grid, tile);
+      var tilePos = state.pixelCoordsToTileCoords(game.input.activePointer);
+      unit.findPath(state.grid, tilePos);
     }
 
     //pixel coords outside of unit
     //should i move inside unit?
-    var moveToPosition = tilesToPixels(unit.position);
+    var pixelPosition = state.tileCoordsToPixelCoords(unit.position);
 
-    if(game.physics.arcade.distanceToXY(sprite, moveToPosition.x, moveToPosition.y) > 6) {
-      game.physics.arcade.moveToObject(sprite, moveToPosition, 300);
+    if(game.physics.arcade.distanceToXY(sprite, pixelPosition.x, pixelPosition.y) > 6) {
+      game.physics.arcade.moveToObject(sprite, pixelPosition, 300);
       setPosOnce = false;
     } else {
 
@@ -91,7 +75,7 @@ export default function start() {
 
       if(unit.pathQueue.length > 0) {
         if(unit.iterateOverPath()) {
-          moveToPosition = tilesToPixels(unit.position);
+          pixelPosition = state.tileCoordsToPixelCoords(unit.position);
         }
       }
     }
