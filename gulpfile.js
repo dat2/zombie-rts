@@ -2,10 +2,14 @@ var gulp = require('gulp'),
   g = require('gulp-load-plugins')();
 
 var mainBowerFiles = require('main-bower-files'),
-  del = require('del');
+  del = require('del'),
+  express = require('express');
 
 var paths = {
-  devDir: '.tmp/'
+  devDir: '.tmp/',
+  imagesDir: 'asset/images/',
+  scriptsDir: 'scripts/',
+  stylesDir: 'styles/'
 };
 
 gulp.task('clean', function(done) {
@@ -14,7 +18,7 @@ gulp.task('clean', function(done) {
 });
 
 gulp.task('scripts', function() {
-  return gulp.src('scripts/*.js')
+  return gulp.src(paths.scriptsDir + '*.js')
     .pipe(g.plumber())
     .pipe(g.es6Transpiler())
     .pipe(g.es6ModuleTranspiler({
@@ -25,10 +29,10 @@ gulp.task('scripts', function() {
 });
 
 gulp.task('imagemin', function() {
-  return gulp.src('assets/images/*')
-    .pipe(g.changed('assets/images'))
+  return gulp.src(paths.imagesDir + '*')
+    .pipe(g.changed(paths.imagesDir))
     .pipe(g.imagemin())
-    .pipe(gulp.dest('assets/images'));
+    .pipe(gulp.dest(paths.imagesDir));
 });
 
 gulp.task('index', ['clean', 'scripts'], function() {
@@ -37,8 +41,7 @@ gulp.task('index', ['clean', 'scripts'], function() {
       gulp.src([paths.devDir + '*', 'styles/*'], {
         read: false
       }), {
-        name: 'app',
-        addPrefix: '/zombie-rts'
+        name: 'app'
       }
     ))
     .pipe(g.inject(
@@ -48,18 +51,27 @@ gulp.task('index', ['clean', 'scripts'], function() {
           read: false
         }), {
         name: 'vendor',
-        addPrefix: '/zombie-rts'
       }
     ))
     //overwrite index
-    .pipe(gulp.dest('.'));
+    .pipe(gulp.dest(paths.devDir));
 });
 
-gulp.task('watch', ['index', 'scripts'], function() {
+gulp.task('serve', ['index', 'scripts'], function() {
   g.livereload.listen();
-  gulp.watch('index.html', ['index']);
-  gulp.watch('assets/images', ['imagemin']);
-  gulp.watch('scripts/*', ['scripts']);
 
-  gulp.watch(['index.html', paths.devDir + '*', 'styles/*', 'vendor/*', 'assets/*']).on('change', g.livereload.changed);
+  var server = express()
+    .use(require('connect-livereload')({
+      port: 35729
+    }))
+    .use(express.static(paths.devDir))
+    .use(express.static('.'));
+
+  require('http').createServer(server).listen(9000);
+
+  gulp.watch('index.html', ['index']);
+  gulp.watch(paths.imagesDir, ['imagemin']);
+  gulp.watch(paths.scriptsDir + '*', ['scripts']);
+
+  gulp.watch(['index.html', paths.devDir + '*', paths.stylesDir + '*', 'vendor/*', 'assets/*']).on('change', g.livereload.changed);
 });
