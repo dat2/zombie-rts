@@ -39,7 +39,7 @@ gulp.task('imagemin', function() {
 gulp.task('index', ['clean', 'scripts'], function() {
   return gulp.src(paths.index)
     .pipe(g.inject(
-      gulp.src([paths.devDir + '*', 'styles/*'], {
+      gulp.src([paths.devDir + '*', paths.stylesDir + '*'], {
         read: false
       }), {
         name: 'app'
