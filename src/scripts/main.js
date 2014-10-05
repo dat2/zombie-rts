@@ -1,5 +1,6 @@
 import { Unit } from 'Unit';
 import { GameState } from 'GameState';
+import { GameMap } from 'GameMap';
 
 export default function start() {
   var Phaser = window.Phaser;
@@ -13,6 +14,7 @@ export default function start() {
 
   var unit;
   var state;
+  var map;
 
   var setPosOnce = false;
 
@@ -26,17 +28,27 @@ export default function start() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
     state = new GameState(game);
+    map = new GameMap({
+      game,
+      mapName: 'map',
+      dimensions: { width: 80, height: 60 },
+      tileDimensions: { width: 10, height: 10 },
+      walkableTiles: [5,6,8]
+    });
 
     // render the map
-    state.map.addTilesetImage('main', 'tileset', 10, 10);
-    state.layer = state.map.createLayer('Tile Layer 1');
-    state.layer.resizeWorld();
+    map.render({
+      tileset: 'main',
+      tilesetImageKey: 'tileset',
+      layer: 'Tile Layer 1'
+    });
+
 
     // player
 
     // render the player on screen
-    var { x, y } = state.tileCoordsToWorldCoords({x: 36, y: 30});
-    unit = new Unit({x, y, game, spriteKey: 'character', state});
+    var { x, y } = map.tileCoordsToWorldCoords({x: 36, y: 30});
+    unit = new Unit({x, y, game, spriteKey: 'character', speed: 100});
 
     game.physics.arcade.enable(unit.sprite);
   }
@@ -49,35 +61,12 @@ export default function start() {
   }
 
   function update() {
+    // if the mouse is pressed, find a path to the mouse's position
     if(game.input.activePointer.isDown) {
-      //find the tile that the mouse clicked on
-      var tilePos = state.worldCoordsToTileCoords(game.input.activePointer);
-
-      //find a path to this tile (findPath adds to the pathQueue)
-      unit.findPath(state.grid, tilePos);
+      unit.findPath(map, game.input.activePointer);
     }
 
-    //while the sprite is not at the pixel position, keep moving
-    var worldPosition = unit.position;
-    if(game.physics.arcade.distanceToXY(unit.sprite, worldPosition.x, worldPosition.y) > 6) {
-      game.physics.arcade.moveToObject(unit.sprite, worldPosition, unit.speed);
-      setPosOnce = false;
-    } else {
-
-      //else stop moving, and update the units position to the new tile
-      unit.sprite.body.velocity.set(0);
-      if(!setPosOnce) {
-        updateUnitPosition(unit.sprite);
-      }
-
-      // if the unit has more points in the pathQueue, set the next move position
-      // to the next point in the queue
-      if(unit.pathQueue.length > 0) {
-        if(unit.iterateOverPath()) {
-          worldPosition = unit.position;
-        }
-      }
-    }
+    unit.update();
   }
 
   function render() {
