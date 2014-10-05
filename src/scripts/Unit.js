@@ -8,6 +8,8 @@ export class Unit extends Entity {
     this.sprite = this.game.add.sprite(x, y, spriteKey);
     this.sprite.anchor.set(0.5);
 
+    game.physics.arcade.enable(this.sprite);
+
     this.pathQueue = [];
   }
 
