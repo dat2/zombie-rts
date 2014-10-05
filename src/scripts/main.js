@@ -48,11 +48,15 @@ export default function start() {
     // player
 
     // render the player on screen
-    var { x, y } = map.tileCoordsToWorldCoords({x: 36, y: 30});
-    unit = new Unit({x, y, game, spriteKey: 'character', speed: 100});
+    {
+      let { x, y } = map.tileCoordsToWorldCoords({x: 36, y: 30});
+      unit = new Unit({x, y, game, spriteKey: 'character', speed: 100});
+    }
 
-    var pos = map.tileCoordsToWorldCoords({x: 30, y: 30});
-    unit2 = new Unit({x: pos.x, y: pos.y, game, spriteKey: 'character', speed: 100});
+    {
+      let { x, y } = map.tileCoordsToWorldCoords({x: 30, y: 30});
+      unit2 = new Unit({x, y, game, spriteKey: 'character', speed: 100});
+    }
   }
 
   // move the unit's tile position
