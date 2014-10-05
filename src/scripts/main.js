@@ -13,39 +13,37 @@ export default function start() {
   var sprite;
 
   var unit;
-  var state = new GameState(game);
+  var state;
 
   var setPosOnce = false;
 
   function preload() {
-    game.load.image('star', 'assets/images/star.png');
-    game.load.image('grass', 'assets/images/grass.jpg');
-    game.load.image('grass2', 'assets/images/grass2.jpg');
+    game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.image('character', 'assets/images/character.png');
+    game.load.image('tileset', 'assets/images/tile_sheet.png');
   }
 
   function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
 
-    var { width: tileWidth, height: tileHeight } = state.getPixelDimensionsPerTile();
-    for(let row = 0; row < state.tiles.vertical; row++) {
-      for(let col = 0; col < state.tiles.horizontal; col++) {
-        game.add.sprite(tileWidth * col, tileHeight * row, 'grass' + (state.tileArray[row][col] === 1 ? '2' : ''));
-      }
-    }
+    state = new GameState(game);
+
+    state.map.addTilesetImage('main', 'tileset', 10, 10);
+    state.layer = state.map.createLayer('Tile Layer 1');
+    state.layer.resizeWorld();
 
     //player
-    unit = new Unit({x: 1, y: 1});
-    var { x: startX, y: startY } = state.tileCoordsToPixelCoords(unit.position);
-    sprite = game.add.sprite(startX, startY, 'star');
+    unit = new Unit({x: 36, y: 30});
+    var { x: startX, y: startY } = state.tileCoordsToWorldCoords(unit.position);
+
+    sprite = game.add.sprite(startX, startY, 'character');
     sprite.anchor.set(0.5);
 
     game.physics.arcade.enable(sprite);
-
-    sprite.inputEnabled = true;
   }
 
-  function updateUnitPosition(pixelPos) {
-    var tilePos = state.pixelCoordsToTileCoords(pixelPos);
+  function updateUnitPosition(worldPos) {
+    var tilePos = state.worldCoordsToTileCoords(worldPos);
     unit.moveTo(tilePos);
 
     setPosOnce = true;
@@ -54,14 +52,15 @@ export default function start() {
   function update() {
     if(game.input.activePointer.isDown) {
       //find the tile that the mouse clicked on
-      var tilePos = state.pixelCoordsToTileCoords(game.input.activePointer);
+      var tilePos = state.worldCoordsToTileCoords(game.input.activePointer);
+      console.log(tilePos);
 
       //find a path to this tile (findPath adds to the pathQueue)
       unit.findPath(state.grid, tilePos);
     }
 
     //while the sprite is not at the pixel position, keep moving
-    var pixelPosition = state.tileCoordsToPixelCoords(unit.position);
+    var pixelPosition = state.tileCoordsToWorldCoords(unit.position);
     if(game.physics.arcade.distanceToXY(sprite, pixelPosition.x, pixelPosition.y) > 6) {
       game.physics.arcade.moveToObject(sprite, pixelPosition, 300);
       setPosOnce = false;
@@ -77,7 +76,7 @@ export default function start() {
       // to the next point in the queue
       if(unit.pathQueue.length > 0) {
         if(unit.iterateOverPath()) {
-          pixelPosition = state.tileCoordsToPixelCoords(unit.position);
+          pixelPosition = state.tileCoordsToWorldCoords(unit.position);
         }
       }
     }

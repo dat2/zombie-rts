@@ -1,55 +1,58 @@
 export class GameState {
   constructor(game) {
-    this.tiles = {
-      horizontal: 5,
-      vertical: 5
-    };
+    this.map = game.add.tilemap('map');
 
-    this.tileArray = [
-      [0,1,0,0,1],
-      [0,0,0,0,1],
-      [1,1,0,0,0],
-      [1,1,0,1,1],
-      [0,1,0,0,0]
-    ];
+    var { width, height } = this.map.layer;
+    this.mapDimensions = { width, height };
+
+    var { tileWidth, tileHeight } = this.map;
+    this.tileDimensions = { width: tileWidth, height: tileHeight };
 
     var easystar = require('easystar');
     var _grid = new easystar.js();
-    _grid.setGrid(this.tileArray);
-    _grid.setAcceptableTiles([0]);
+    _grid.setGrid(this.createGridFromMap());
+    _grid.setAcceptableTiles([5,6,8]);
+    _grid.enableDiagonals();
 
     this.grid = _grid;
 
-    this.setDimensions(game);
+    this.setScreenDimensions(game);
   }
 
-  setDimensions({ width, height }) {
+  setScreenDimensions({ width, height }) {
     this.screenWidth = width;
     this.screenHeight = height;
-
-    var { width: tileWidth, height: tileHeight } = this.getPixelDimensionsPerTile();
-    this.tileWidth = tileWidth;
-    this.tileHeight = tileHeight;
   }
 
-  getPixelDimensionsPerTile() {
+  // create the easystarjs grid from the tilemap
+  createGridFromMap() {
+    var rtn = [];
+    for(let row = 0; row < this.mapDimensions.height; row++) {
+      rtn.push(new Array(this.mapDimensions.width));
+      for(let col = 0; col < this.mapDimensions.width; col++) {
+        rtn[row][col] = this.map.getTile(col, row).index;
+      }
+    }
+    return rtn;
+  }
+
+  getTileDimensions() {
+    return this.tileDimensions;
+  }
+
+  tileCoordsToWorldCoords({ x, y }) {
+    var { width, height } = this.tileDimensions;
     return {
-      width: this.screenWidth / this.tiles.horizontal,
-      height: this.screenHeight / this.tiles.vertical
+      x: (x + 1) * (width)  - (width / 2),
+      y: (y + 1) * (height) - (height / 2)
     };
   }
 
-  tileCoordsToPixelCoords({ x, y }) {
+  worldCoordsToTileCoords({ x, y }) {
+    var {width, height} = this.tileDimensions;
     return {
-      x: (x + 1) * (this.tileWidth)  - (this.tileWidth / 2),
-      y: (y + 1) * (this.tileHeight) - (this.tileHeight / 2)
-    };
-  }
-
-  pixelCoordsToTileCoords({ x, y }) {
-    return {
-      x: Math.floor(x / this.tileWidth),
-      y: Math.floor(y / this.tileHeight)
+      x: Math.floor(x / width),
+      y: Math.floor(y / height)
     };
   }
 }
