@@ -1,7 +1,7 @@
 import { Entity } from 'Entity';
 
 export class Unit extends Entity {
-  constructor({x, y}) {
+  constructor({x, y, game}) {
     super({x, y});
     this.pathQueue = [];
   }
