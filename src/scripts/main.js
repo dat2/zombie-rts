@@ -28,20 +28,23 @@ export default function start() {
 
     state = new GameState(game);
 
+    // render the map
     state.map.addTilesetImage('main', 'tileset', 10, 10);
     state.layer = state.map.createLayer('Tile Layer 1');
     state.layer.resizeWorld();
 
-    //player
-    unit = new Unit({x: 36, y: 30});
-    var { x: startX, y: startY } = state.tileCoordsToWorldCoords(unit.position);
+    // player
+    unit = new Unit({x: 36, y: 30, game});
 
+    // render the player on screen
+    var { x: startX, y: startY } = state.tileCoordsToWorldCoords(unit.position);
     sprite = game.add.sprite(startX, startY, 'character');
     sprite.anchor.set(0.5);
 
     game.physics.arcade.enable(sprite);
   }
 
+  // move the unit's tile position
   function updateUnitPosition(worldPos) {
     var tilePos = state.worldCoordsToTileCoords(worldPos);
     unit.moveTo(tilePos);
@@ -53,7 +56,6 @@ export default function start() {
     if(game.input.activePointer.isDown) {
       //find the tile that the mouse clicked on
       var tilePos = state.worldCoordsToTileCoords(game.input.activePointer);
-      console.log(tilePos);
 
       //find a path to this tile (findPath adds to the pathQueue)
       unit.findPath(state.grid, tilePos);
