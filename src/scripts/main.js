@@ -10,7 +10,6 @@ export default function start() {
     update,
     render
   });
-  var sprite;
 
   var unit;
   var state;
@@ -34,20 +33,17 @@ export default function start() {
     state.layer.resizeWorld();
 
     // player
-    unit = new Unit({x: 36, y: 30, game});
 
     // render the player on screen
-    var { x: startX, y: startY } = state.tileCoordsToWorldCoords(unit.position);
-    sprite = game.add.sprite(startX, startY, 'character');
-    sprite.anchor.set(0.5);
+    var { x, y } = state.tileCoordsToWorldCoords({x: 36, y: 30});
+    unit = new Unit({x, y, game, spriteKey: 'character', state});
 
-    game.physics.arcade.enable(sprite);
+    game.physics.arcade.enable(unit.sprite);
   }
 
   // move the unit's tile position
   function updateUnitPosition(worldPos) {
-    var tilePos = state.worldCoordsToTileCoords(worldPos);
-    unit.moveTo(tilePos);
+    unit.moveTo(worldPos);
 
     setPosOnce = true;
   }
@@ -62,23 +58,23 @@ export default function start() {
     }
 
     //while the sprite is not at the pixel position, keep moving
-    var pixelPosition = state.tileCoordsToWorldCoords(unit.position);
-    if(game.physics.arcade.distanceToXY(sprite, pixelPosition.x, pixelPosition.y) > 6) {
-      game.physics.arcade.moveToObject(sprite, pixelPosition, 300);
+    var worldPosition = unit.position;
+    if(game.physics.arcade.distanceToXY(unit.sprite, worldPosition.x, worldPosition.y) > 6) {
+      game.physics.arcade.moveToObject(unit.sprite, worldPosition, unit.speed);
       setPosOnce = false;
     } else {
 
       //else stop moving, and update the units position to the new tile
-      sprite.body.velocity.set(0);
+      unit.sprite.body.velocity.set(0);
       if(!setPosOnce) {
-        updateUnitPosition(sprite);
+        updateUnitPosition(unit.sprite);
       }
 
       // if the unit has more points in the pathQueue, set the next move position
       // to the next point in the queue
       if(unit.pathQueue.length > 0) {
         if(unit.iterateOverPath()) {
-          pixelPosition = state.tileCoordsToWorldCoords(unit.position);
+          worldPosition = unit.position;
         }
       }
     }

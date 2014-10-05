@@ -1,8 +1,13 @@
 import { Entity } from 'Entity';
 
 export class Unit extends Entity {
-  constructor({x, y, game}) {
-    super({x, y});
+  constructor({x, y, game, spriteKey, state}) {
+    super({x, y, game, state});
+
+    // visual stuff
+    this.sprite = this.game.add.sprite(x, y, spriteKey);
+    this.sprite.anchor.set(0.5);
+
     this.pathQueue = [];
   }
 
@@ -19,14 +24,15 @@ export class Unit extends Entity {
     if(point === undefined) {
       return false;
     }
-    this.moveTo(point);
+    this.moveTo(this.state.tileCoordsToWorldCoords(point));
     return true;
   }
 
   //find a path, and add it to the path queue
   findPath(grid, {x, y}) {
+    var tilePos = this.state.worldCoordsToTileCoords(this.position);
     if(this.pathQueue.length === 0) {
-      grid.findPath(this.position.x, this.position.y, x, y, path => {
+      grid.findPath(tilePos.x, tilePos.y, x, y, path => {
         if(path === null) {
           return;
         }
