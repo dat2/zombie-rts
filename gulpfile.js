@@ -26,7 +26,9 @@ gulp.task('scripts', function() {
     .pipe(g.es6ModuleTranspiler({
       type: 'amd',
     }))
-    .pipe(gulp.dest(paths.devDir));
+    .pipe(g.changed(paths.devDir))
+    .pipe(gulp.dest(paths.devDir))
+    .pipe(reload({stream:true}));
 });
 
 gulp.task('imagemin', function() {
