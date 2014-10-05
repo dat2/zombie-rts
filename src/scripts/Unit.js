@@ -18,6 +18,12 @@ export class Unit extends Entity {
     this.pathQueue.push(...elements);
   }
 
+  // array = [] versus length = 0?
+  //
+  clearQueue() {
+    this.pathQueue.length = 0;
+  }
+
   getNextPoint() {
     return this.pathQueue.shift();
   }

@@ -69,7 +69,10 @@ export default function start() {
   function update() {
     // if the mouse is pressed, find a path to the mouse's position
     if(game.input.activePointer.isDown) {
+      unit.clearQueue();
       unit.findPath(map, game.input.activePointer);
+
+      unit2.clearQueue();
       unit2.findPath(map, game.input.activePointer);
     }
 
