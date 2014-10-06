@@ -52,8 +52,8 @@ export default function start() {
     // add random entities
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 34, y: 30});
-      let id = entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
-      game.camera.follow(entityManager._entities[id].sprite);
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100}, 'follow');
+      entityManager.setCameraToFollowEntity('follow');
     }
 
     {

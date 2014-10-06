@@ -19,10 +19,9 @@ export class EntityManager {
     return;
   }
 
-  addUnit(unitProperties) {
-    var id = this.generateUIDForUnit();
-    this._entities[id] = new Unit(unitProperties);
-    return id;
+  addUnit(unitProperties, unitId = this.generateUIDForUnit()) {
+    this._entities[unitId] = new Unit(unitProperties);
+    return unitId;
   }
 
   generateUIDForUnit() {
@@ -39,5 +38,9 @@ export class EntityManager {
 
   filterEntities(predicate) {
     return this.entities.filter( predicate );
+  }
+
+  setCameraToFollowEntity(entityId) {
+    this.game.camera.follow(this._entities[entityId].sprite);
   }
 }
