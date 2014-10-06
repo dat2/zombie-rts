@@ -58,12 +58,12 @@ export default function start() {
 
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 30, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 50});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
     }
 
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 42, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 200});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
     }
   }
 
