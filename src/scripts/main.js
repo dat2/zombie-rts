@@ -57,12 +57,12 @@ export default function start() {
 
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 30, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 50});
     }
 
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 42, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 200});
     }
   }
 
@@ -73,6 +73,6 @@ export default function start() {
   function render() {
     game.debug.inputInfo(32, 32);
 
-    game.debug.geom(selectionRect, '#0fffff');
+    game.debug.geom(selectionHandler.selectionRect, '#0fffff');
   }
 }
