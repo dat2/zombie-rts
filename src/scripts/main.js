@@ -51,7 +51,7 @@ export default function start() {
 
     // add random entities
     {
-      let { x, y } = map.tileCoordsToWorldCoords({x: 36, y: 30});
+      let { x, y } = map.tileCoordsToWorldCoords({x: 34, y: 30});
       entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
     }
 
