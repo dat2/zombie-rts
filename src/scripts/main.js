@@ -1,6 +1,7 @@
 import { Unit } from 'Unit';
 import { GameState } from 'GameState';
 import { GameMap } from 'GameMap';
+import { EntityManager } from 'EntityManager';
 
 export default function start() {
   var Phaser = window.Phaser;
@@ -12,12 +13,9 @@ export default function start() {
     render
   });
 
-  var unit;
-  var unit2;
+  var entityManager;
   var state;
   var map;
-
-  var setPosOnce = false;
 
   function preload() {
     game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
@@ -27,6 +25,7 @@ export default function start() {
 
   function create() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    game.canvas.oncontextmenu = (e) => e.preventDefault();
 
     state = new GameState(game);
     map = new GameMap({
@@ -44,40 +43,27 @@ export default function start() {
       layer: 'Tile Layer 1'
     });
 
+    entityManager = new EntityManager({game});
 
-    // player
-
-    // render the player on screen
+    // add random entities
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 36, y: 30});
-      unit = new Unit({x, y, game, spriteKey: 'character', speed: 100});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
     }
 
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 30, y: 30});
-      unit2 = new Unit({x, y, game, spriteKey: 'character', speed: 100});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
     }
-  }
 
-  // move the unit's tile position
-  function updateUnitPosition(worldPos) {
-    unit.moveTo(worldPos);
-
-    setPosOnce = true;
+    {
+      let { x, y } = map.tileCoordsToWorldCoords({x: 42, y: 30});
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+    }
   }
 
   function update() {
-    // if the mouse is pressed, find a path to the mouse's position
-    if(game.input.activePointer.isDown) {
-      unit.clearQueue();
-      unit.findPath(map, game.input.activePointer);
-
-      unit2.clearQueue();
-      unit2.findPath(map, game.input.activePointer);
-    }
-
-    unit.update();
-    unit2.update();
+   entityManager.update();
   }
 
   function render() {
