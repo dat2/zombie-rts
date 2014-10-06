@@ -22,7 +22,6 @@ export class Unit extends Entity {
   }
 
   // array = [] versus length = 0?
-  //
   clearQueue() {
     this.pathQueue.length = 0;
   }
@@ -50,6 +49,8 @@ export class Unit extends Entity {
           return;
         }
 
+        console.log(path);
+
         // the path returned by easy star contains our position
         path.shift();
 
@@ -65,6 +66,12 @@ export class Unit extends Entity {
   }
 
   update () {
+    // if the unit has more points in the pathQueue, set the next move position
+    // to the next point in the queue
+    if(this.pathQueue.length > 0) {
+      this.iterateOverPath();
+    }
+
     //while the sprite is not at the world position, keep moving
     if(this.game.physics.arcade.distanceToXY(this.sprite, this.position.x, this.position.y) > 6) {
       this.game.physics.arcade.moveToObject(this.sprite, this.position, this.speed);
@@ -72,12 +79,6 @@ export class Unit extends Entity {
       //else stop moving, and update the units position to the new tile
       this.sprite.body.velocity.set(0);
       this.moveTo(this.sprite);
-
-      // if the unit has more points in the pathQueue, set the next move position
-      // to the next point in the queue
-      if(this.pathQueue.length > 0) {
-        this.iterateOverPath();
-      }
     }
   }
 
