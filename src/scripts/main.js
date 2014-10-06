@@ -20,7 +20,7 @@ export default function start() {
   var selectionHandler;
 
   function preload() {
-    game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.tilemap('map', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('character', 'assets/images/character.png');
     game.load.image('tileset', 'assets/images/tile_sheet.png');
   }
@@ -33,7 +33,7 @@ export default function start() {
     map = new GameMap({
       game,
       mapName: 'map',
-      dimensions: { width: 80, height: 60 },
+      dimensions: { width: 160, height: 120 },
       tileDimensions: { width: 10, height: 10 },
       walkableTiles: [5,6,8]
     });
@@ -42,7 +42,7 @@ export default function start() {
     map.render({
       tileset: 'main',
       tilesetImageKey: 'tileset',
-      layer: 'Tile Layer 1'
+      layer: 'main'
     });
 
     entityManager = new EntityManager({game});
@@ -52,7 +52,8 @@ export default function start() {
     // add random entities
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 34, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      let id = entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      game.camera.follow(entityManager._entities[id].sprite);
     }
 
     {
