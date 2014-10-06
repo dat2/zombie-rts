@@ -15,7 +15,7 @@ export class GameMap {
     if(diagonals) {
       _grid.enableDiagonals();
     }
-    _grid.setIterationsPerCalculation(200);
+    _grid.setIterationsPerCalculation(500);
 
     this.grid = _grid;
   }
