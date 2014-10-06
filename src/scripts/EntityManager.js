@@ -8,11 +8,13 @@ export class EntityManager {
     this._entities = {};
   }
 
+  // getters / setter for EntityManager.entities
   get entities() {
     let array = _.keys(this._entities).map( (key) => this._entities[key]);
     return array;
   }
 
+  // not allowed to set it
   set entities(value) {
     return;
   }
@@ -29,6 +31,10 @@ export class EntityManager {
 
   update() {
     this.entities.forEach( (entity) => entity.update() );
+  }
+
+  render() {
+    this.entities.forEach( (entity) => entity.render() );
   }
 
   filterEntities(predicate) {

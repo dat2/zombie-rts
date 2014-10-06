@@ -67,12 +67,13 @@ export default function start() {
   }
 
   function update() {
-   entityManager.update();
+    entityManager.update();
   }
 
   function render() {
     game.debug.inputInfo(32, 32);
 
     game.debug.geom(selectionHandler.selectionRect, '#0fffff');
+    entityManager.render();
   }
 }

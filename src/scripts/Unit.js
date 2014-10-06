@@ -1,4 +1,5 @@
 import { Entity } from 'Entity';
+var Phaser = window.Phaser;
 
 export class Unit extends Entity {
   constructor({ x, y, game, spriteKey, speed }) {
@@ -11,6 +12,8 @@ export class Unit extends Entity {
     game.physics.arcade.enable(this.sprite);
 
     this.pathQueue = [];
+
+    this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, 14, 14);
   }
 
   // elements should be an array
@@ -75,6 +78,15 @@ export class Unit extends Entity {
       if(this.pathQueue.length > 0) {
         this.iterateOverPath();
       }
+    }
+  }
+
+  render() {
+    this.selectedRect.centerX = this.sprite.x;
+    this.selectedRect.centerY = this.sprite.y;
+    if(this.selected) {
+      this.game.debug.geom(this.selectedRect, '#0fffff');
+      this.game.world.bringToTop(this.sprite);
     }
   }
 }
