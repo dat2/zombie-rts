@@ -14,12 +14,14 @@ export class SelectionHandler {
 
   handle() {
     // on move, update the selection rectangle
-    this.game.input.addMoveCallback((pointer, mx, my) => {
+    this.game.input.addMoveCallback((pointer) => {
       if(!this.dragging) {
         return;
       }
 
       let { x: sx, y: sy } = this.dragStartPos;
+
+      let { worldX: mx, worldY: my } = pointer;
 
       // set the width accordingly
       this.selectionRect.width = Math.abs(mx - this.selectionRect.x);
@@ -58,7 +60,7 @@ export class SelectionHandler {
 
         // start dragging
         this.dragging = true;
-        let { x, y } = pointer;
+        let { worldX: x, worldY: y } = pointer;
         this.selectionRect.x = x;
         this.selectionRect.y = y;
 
@@ -67,9 +69,13 @@ export class SelectionHandler {
       } else if(this.game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
         // right click, move units to the point
 
+        let { worldX: x, worldY: y } = pointer;
+        let worldPos = { x, y };
+        console.log(worldPos);
+
         this.selectedEntities.forEach( (entity) => {
           entity.clearQueue();
-          entity.findPath(this.map, pointer);
+          entity.findPath(this.map, worldPos);
         });
       }
     });
