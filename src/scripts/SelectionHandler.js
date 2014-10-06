@@ -9,18 +9,32 @@ export class SelectionHandler {
     this.selectionRect = new Phaser.Rectangle(0, 0, 0, 0);
     this.selectedEntities = [];
     this.dragging = false;
+    this.dragStartPos = { x: 0, y: 0 };
   }
 
   handle() {
     // on move, update the selection rectangle
-    this.game.input.addMoveCallback((pointer, x, y) => {
+    this.game.input.addMoveCallback((pointer, mx, my) => {
       if(!this.dragging) {
         return;
       }
 
+      let { x: sx, y: sy } = this.dragStartPos;
+
       // set the width accordingly
-      this.selectionRect.width = x - this.selectionRect.x;
-      this.selectionRect.height = y - this.selectionRect.y;
+      this.selectionRect.width = Math.abs(mx - this.selectionRect.x);
+      this.selectionRect.height = Math.abs(my - this.selectionRect.y);
+
+      // if we moved left of the original start position, we need to move the
+      // rect left to ensure that width > 0
+      if(mx < sx) {
+        this.selectionRect.width = sx - mx;
+        this.selectionRect.x = mx;
+      }
+      if(my < sy) {
+        this.selectionRect.height = sy - my;
+        this.selectionRect.y = my;
+      }
 
       // set each entity inside the rectangle's selected property to true
       let entities = this.entityManager.filterEntities( (entity) => {
@@ -47,6 +61,8 @@ export class SelectionHandler {
         let { x, y } = pointer;
         this.selectionRect.x = x;
         this.selectionRect.y = y;
+
+        this.dragStartPos = { x, y };
 
       } else if(this.game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
         // right click, move units to the point
