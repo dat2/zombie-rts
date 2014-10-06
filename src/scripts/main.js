@@ -2,6 +2,7 @@ import { Unit } from 'Unit';
 import { GameState } from 'GameState';
 import { GameMap } from 'GameMap';
 import { EntityManager } from 'EntityManager';
+import { SelectionHandler } from 'SelectionHandler';
 
 export default function start() {
   var Phaser = window.Phaser;
@@ -16,6 +17,7 @@ export default function start() {
   var entityManager;
   var state;
   var map;
+  var selectionHandler;
 
   function preload() {
     game.load.tilemap('map', 'assets/map.json', null, Phaser.Tilemap.TILED_JSON);
@@ -44,6 +46,8 @@ export default function start() {
     });
 
     entityManager = new EntityManager({game});
+    selectionHandler = new SelectionHandler({game, entityManager, map});
+    selectionHandler.handle();
 
     // add random entities
     {
@@ -68,5 +72,7 @@ export default function start() {
 
   function render() {
     game.debug.inputInfo(32, 32);
+
+    game.debug.geom(selectionRect, '#0fffff');
   }
 }
