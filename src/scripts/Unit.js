@@ -49,14 +49,20 @@ export class Unit extends Entity {
           return;
         }
 
-        console.log(path);
-
         // the path returned by easy star contains our position
         path.shift();
 
         // convert the tileCoordinate path to worldCoordinate path
         path = path.map( (element) => {
           return map.tileCoordsToWorldCoords(element);
+        });
+
+        path.forEach( (element) => {
+          console.log(element);
+          var shape = this.game.add.graphics(element.x, element.y);  //init rect
+          shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
+          shape.beginFill(0xFFFF0B, 1); // color (0xFFFF0B), alpha (0 -> 1) // required settings
+          shape.drawRect(0, 0, 10, 10); // (x, y, w, h)
         });
 
         // add it to the path queue
@@ -66,19 +72,18 @@ export class Unit extends Entity {
   }
 
   update () {
-    // if the unit has more points in the pathQueue, set the next move position
-    // to the next point in the queue
-    if(this.pathQueue.length > 0) {
-      this.iterateOverPath();
-    }
-
     //while the sprite is not at the world position, keep moving
     if(this.game.physics.arcade.distanceToXY(this.sprite, this.position.x, this.position.y) > 6) {
       this.game.physics.arcade.moveToObject(this.sprite, this.position, this.speed);
     } else {
       //else stop moving, and update the units position to the new tile
       this.sprite.body.velocity.set(0);
-      this.moveTo(this.sprite);
+
+      // if the unit has more points in the pathQueue, set the next move position
+      // to the next point in the queue
+      if(this.pathQueue.length > 0) {
+        this.iterateOverPath();
+      }
     }
   }
 
