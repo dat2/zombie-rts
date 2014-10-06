@@ -71,7 +71,6 @@ export class SelectionHandler {
 
         let { worldX: x, worldY: y } = pointer;
         let worldPos = { x, y };
-        console.log(worldPos);
 
         this.selectedEntities.forEach( (entity) => {
           entity.clearQueue();
