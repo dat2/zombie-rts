@@ -40,7 +40,8 @@ export class SelectionHandler {
 
       // set each entity inside the rectangle's selected property to true
       let entities = this.entityManager.filterEntities( (entity) => {
-        return Phaser.Rectangle.containsPoint(this.selectionRect, entity.sprite);
+        //prevent the camera from being detected
+        return entity.sprite.visible && Phaser.Rectangle.containsPoint(this.selectionRect, entity.sprite);
       });
       entities.forEach( (entity) => {
         entity.selected = true;
