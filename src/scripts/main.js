@@ -3,6 +3,7 @@ import { GameState } from 'GameState';
 import { GameMap } from 'GameMap';
 import { EntityManager } from 'EntityManager';
 import { SelectionHandler } from 'SelectionHandler';
+import { CameraHandler } from 'CameraHandler';
 
 export default function start() {
   var Phaser = window.Phaser;
@@ -18,6 +19,7 @@ export default function start() {
   var state;
   var map;
   var selectionHandler;
+  var cameraHandler;
 
   function preload() {
     game.load.tilemap('map', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
@@ -45,15 +47,26 @@ export default function start() {
       layer: 'main'
     });
 
+
     entityManager = new EntityManager({game});
+
     selectionHandler = new SelectionHandler({game, entityManager, map});
     selectionHandler.handle();
+
+    // add camera
+    {
+      let { x, y } = map.tileCoordsToWorldCoords({x: 34, y: 30});
+      let cameraProperties = {x, y, game, spriteKey: 'character', speed: 100};
+
+      let cursors = game.input.keyboard.createCursorKeys();
+      cameraHandler = new CameraHandler({game, entityManager, map, cursors, cameraProperties, edgePixels: 50});
+      cameraHandler.handle();
+    }
 
     // add random entities
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 34, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100}, 'follow');
-      entityManager.setCameraToFollowEntity('follow');
+      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
     }
 
     {
@@ -75,6 +88,8 @@ export default function start() {
     game.debug.inputInfo(32, 32);
 
     game.debug.geom(selectionHandler.selectionRect, '#0fffff');
+    // game.debug.geom(cameraHandler.deadHorizontalRect, '#00ff00');
+    // game.debug.geom(cameraHandler.deadVerticalRect, '#0000ff');
     entityManager.render();
   }
 }
