@@ -3,13 +3,7 @@ var Phaser = window.Phaser;
 
 export class Unit extends Entity {
   constructor({ x, y, game, spriteKey, speed }) {
-    super({ x, y, game, speed });
-
-    // visual stuff
-    this.sprite = this.game.add.sprite(x, y, spriteKey);
-    this.sprite.anchor.set(0.5);
-
-    game.physics.arcade.enable(this.sprite);
+    super({ x, y, game, speed , spriteKey});
 
     this.pathQueue = [];
 
@@ -49,7 +43,7 @@ export class Unit extends Entity {
           return;
         }
 
-        // the path returned by easy star contains our position
+        // the first element in path returned by easy star contains our position
         path.shift();
 
         // convert the tileCoordinate path to worldCoordinate path
@@ -58,7 +52,7 @@ export class Unit extends Entity {
         });
 
         path.forEach( (element) => {
-          console.log(element);
+          // console.log(element);
           var shape = this.game.add.graphics(element.x, element.y);  //init rect
           shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
           shape.beginFill(0xFFFF0B, 1); // color (0xFFFF0B), alpha (0 -> 1) // required settings
