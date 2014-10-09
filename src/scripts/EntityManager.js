@@ -1,4 +1,5 @@
 import { Unit } from 'Unit';
+import { Camera } from 'Camera';
 var _ = require('lodash');
 
 export class EntityManager {
@@ -10,7 +11,7 @@ export class EntityManager {
 
   // getters / setter for EntityManager.entities
   get entities() {
-    let array = _.keys(this._entities).map( (key) => this._entities[key]);
+    let array = _.keys(this._entities).map( (key) => this._entities[key] );
     return array;
   }
 
@@ -22,6 +23,16 @@ export class EntityManager {
   addUnit(unitProperties, unitId = this.generateUIDForUnit()) {
     this._entities[unitId] = new Unit(unitProperties);
     return unitId;
+  }
+
+  createCamera(cameraProperties) {
+    this._entities['camera'] = new Camera(cameraProperties);
+    this.game.camera.follow(this._entities['camera'].sprite);
+    return this._entities['camera'];
+  }
+
+  getUnit(unitId) {
+    return this._entities[unitId];
   }
 
   generateUIDForUnit() {
@@ -38,9 +49,5 @@ export class EntityManager {
 
   filterEntities(predicate) {
     return this.entities.filter( predicate );
-  }
-
-  setCameraToFollowEntity(entityId) {
-    this.game.camera.follow(this._entities[entityId].sprite);
   }
 }
