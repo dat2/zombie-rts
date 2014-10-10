@@ -18,6 +18,10 @@ export class Unit extends Entity {
   // array = [] versus length = 0?
   clearQueue() {
     this.pathQueue.length = 0;
+    // delete visualization
+    this.pathQueue.forEach( (element) => {
+      element.shape.destroy();
+    });
   }
 
   getNextPoint() {
@@ -31,6 +35,7 @@ export class Unit extends Entity {
       return false;
     }
     this.moveTo(point);
+    point.shape.destroy();
   }
 
   //find a path, and add it to the path queue
@@ -51,12 +56,12 @@ export class Unit extends Entity {
           return map.tileCoordsToWorldCoords(element);
         });
 
+        // visualization of the path
         path.forEach( (element) => {
-          // console.log(element);
-          var shape = this.game.add.graphics(element.x, element.y);  //init rect
-          shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
-          shape.beginFill(0xFFFF0B, 1); // color (0xFFFF0B), alpha (0 -> 1) // required settings
-          shape.drawRect(0, 0, 10, 10); // (x, y, w, h)
+          element.shape = this.game.add.graphics(element.x, element.y);  //init rect
+          element.shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
+          element.shape.beginFill(0xFFFF0B, 1); // color (0xFFFF0B), alpha (0 -> 1) // required settings
+          element.shape.drawRect(0, 0, 10, 10); // (x, y, w, h)
         });
 
         // add it to the path queue
