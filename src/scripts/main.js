@@ -20,6 +20,7 @@ export default function start() {
   var map;
   var selectionHandler;
   var cameraHandler;
+  var debugKey;
 
   function preload() {
     game.load.tilemap('map', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
@@ -47,7 +48,8 @@ export default function start() {
       layer: 'main'
     });
 
-
+    debugKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+    debugKey.onDown.add(() => { debugger; });
     entityManager = new EntityManager({game});
 
     selectionHandler = new SelectionHandler({game, entityManager, map});
