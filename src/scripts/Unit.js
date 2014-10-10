@@ -17,11 +17,14 @@ export class Unit extends Entity {
 
   // array = [] versus length = 0?
   clearQueue() {
-    this.pathQueue.length = 0;
     // delete visualization
     this.pathQueue.forEach( (element) => {
       element.shape.destroy();
     });
+    // actually clear the queue
+    while(this.pathQueue.length > 0) {
+      this.pathQueue.shift();
+    }
   }
 
   getNextPoint() {
@@ -80,9 +83,7 @@ export class Unit extends Entity {
 
       // if the unit has more points in the pathQueue, set the next move position
       // to the next point in the queue
-      if(this.pathQueue.length > 0) {
-        this.iterateOverPath();
-      }
+      this.iterateOverPath();
     }
   }
 
