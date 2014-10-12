@@ -7,9 +7,22 @@ export class SelectionHandler {
     this.map = map;
 
     this.selectionRect = new Phaser.Rectangle(0, 0, 0, 0);
+    this.graphics = this.game.add.graphics(0, 0);
+
     this.selectedEntities = [];
     this.dragging = false;
     this.dragStartPos = { x: 0, y: 0 };
+
+    this.shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
+  }
+
+  drawGraphics() {
+    this.graphics.destroy();
+
+    this.graphics = this.game.add.graphics(this.selectionRect.x, this.selectionRect.y);
+    this.graphics.lineStyle(2, 0x00FF00, 1); // width, color, alpha (0 -> 1) // required settings
+    this.graphics.beginFill(0x00FF00, 0.5); // color, alpha (0 -> 1) // required settings
+    this.graphics.drawRect(0, 0, this.selectionRect.width, this.selectionRect.height);
   }
 
   handle() {
@@ -44,8 +57,10 @@ export class SelectionHandler {
         return entity.sprite.visible && Phaser.Rectangle.containsPoint(this.selectionRect, entity.sprite);
       });
       entities.forEach( (entity) => {
-        entity.selected = true;
+        entity.select();
       });
+
+      this.drawGraphics();
     });
 
 
@@ -56,7 +71,7 @@ export class SelectionHandler {
 
         // remove selected
         this.selectedEntities.forEach( (entity) => {
-          entity.selected = false;
+          entity.deselect();
         });
 
         // start dragging
@@ -74,8 +89,11 @@ export class SelectionHandler {
         let worldPos = { x, y };
 
         this.selectedEntities.forEach( (entity) => {
-          entity.clearQueue();
-          entity.findPath(this.map, worldPos);
+          if(this.shiftKey.isDown) {
+            entity.findPath(this.map, worldPos, true);
+          } else {
+            entity.findPath(this.map, worldPos);
+          }
         });
       }
     });
@@ -90,6 +108,7 @@ export class SelectionHandler {
 
         this.selectedEntities = this.entityManager.filterEntities( (entity) => entity.selected );
       }
+      this.graphics.destroy();
     });
   }
 }

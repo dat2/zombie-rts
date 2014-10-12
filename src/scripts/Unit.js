@@ -8,6 +8,7 @@ export class Unit extends Entity {
     this.pathQueue = [];
 
     this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, 14, 14);
+    this.selectedGraphics = this.game.add.graphics(0, 0);  //init rect
   }
 
   // elements should be an array
@@ -31,6 +32,16 @@ export class Unit extends Entity {
     return this.pathQueue.shift();
   }
 
+  select() {
+    this.selected = true;
+    this.renderSelected();
+  }
+
+  deselect() {
+    this.selected = false;
+    this.selectedGraphics.destroy();
+  }
+
   // move to the next point in the path
   iterateOverPath() {
     var point = this.getNextPoint();
@@ -42,35 +53,42 @@ export class Unit extends Entity {
   }
 
   //find a path, and add it to the path queue
-  findPath(map, worldPos) {
-    // this if statement needs to change
-    if(this.pathQueue.length === 0) {
-      map.findPath(this.position, worldPos, (path) => {
-        // if no path was found, return
-        if(path === null) {
-          return;
-        }
-
-        // the first element in path returned by easy star contains our position
-        path.shift();
-
-        // convert the tileCoordinate path to worldCoordinate path
-        path = path.map( (element) => {
-          return map.tileCoordsToWorldCoords(element);
-        });
-
-        // visualization of the path
-        path.forEach( (element) => {
-          element.shape = this.game.add.graphics(element.x, element.y);  //init rect
-          element.shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
-          element.shape.beginFill(0xFFFF0B, 1); // color (0xFFFF0B), alpha (0 -> 1) // required settings
-          element.shape.drawRect(0, 0, 10, 10); // (x, y, w, h)
-        });
-
-        // add it to the path queue
-        this.addToPathQueue(path);
-      });
+  findPath(map, worldPos, endOfQueue=false) {
+    let pos = this.position;
+    if(endOfQueue) {
+      pos = this.pathQueue[this.pathQueue.length - 1];
+      if(pos === undefined) {
+        pos = this.position;
+      }
+    } else {
+      this.clearQueue();
     }
+
+    map.findPath(pos, worldPos, (path) => {
+      // if no path was found, return
+      if(path === null) {
+        return;
+      }
+
+      // the first element in path returned by easy star contains our position
+      path.shift();
+
+      // convert the tileCoordinate path to worldCoordinate path
+      path = path.map( (element) => {
+        return map.tileCoordsToWorldCoords(element);
+      });
+
+      // visualization of the path
+      path.forEach( (element) => {
+        element.shape = this.game.add.graphics(element.x, element.y);  //init rect
+        element.shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
+        element.shape.beginFill(0x0000FF, 0.5); // color (0xFFFF0B), alpha (0 -> 1) // required settings
+        element.shape.drawRect(0, 0, 10, 10); // (x, y, w, h)
+      });
+
+      // add it to the path queue
+      this.addToPathQueue(path);
+    });
   }
 
   update () {
@@ -87,12 +105,22 @@ export class Unit extends Entity {
     }
   }
 
+  renderSelected() {
+    if(this.selected) {
+      this.selectedGraphics.destroy();
+
+      this.selectedGraphics = this.game.add.graphics(this.selectedRect.x, this.selectedRect.y);
+      this.selectedGraphics.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
+      this.selectedGraphics.beginFill(0x0000FF, 0.2); // color (0xFFFF0B), alpha (0 -> 1) // required settings
+      this.selectedGraphics.drawRect(0, 0, this.selectedRect.width, this.selectedRect.height); // (x, y, w, h)
+    }
+  }
+
   render() {
     this.selectedRect.centerX = this.sprite.x;
     this.selectedRect.centerY = this.sprite.y;
-    if(this.selected) {
-      this.game.debug.geom(this.selectedRect, '#0fffff');
-      this.game.world.bringToTop(this.sprite);
-    }
+
+    this.renderSelected();
+    this.game.world.bringToTop(this.sprite);
   }
 }

@@ -89,7 +89,7 @@ export default function start() {
   function render() {
     game.debug.inputInfo(32, 32);
 
-    game.debug.geom(selectionHandler.selectionRect, '#0fffff');
+    // game.debug.geom(selectionHandler.selectionRect, '#0fffff');
     // game.debug.geom(cameraHandler.deadHorizontalRect, '#00ff00');
     // game.debug.geom(cameraHandler.deadVerticalRect, '#0000ff');
     entityManager.render();
