@@ -66,20 +66,30 @@ export default function start() {
     }
 
     // add random entities
+    for(let xi = 30; xi <= 42; xi++)
     {
-      let { x, y } = map.tileCoordsToWorldCoords({x: 34, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      for(let yi = 25; yi <= 30; yi++)
+      {
+        let { x, y } = map.tileCoordsToWorldCoords({x: xi, y: yi});
+        entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      }
     }
 
-    {
-      let { x, y } = map.tileCoordsToWorldCoords({x: 30, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
-    }
 
+    /*
+    {
+      let { x, y } = map.tileCoordsToWorldCoords({x: 43, y: 27});
+      let entityId = entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+      let entity = entityManager._entities[entityId];
+      entity.moveTo(map.tileCoordsToWorldCoords({x:60, y:27}));
+    }
+    */
+
+    /*
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 42, y: 30});
       entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
-    }
+    }*/
   }
 
   function update() {
