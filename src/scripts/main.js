@@ -38,7 +38,8 @@ export default function start() {
       mapName: 'map',
       dimensions: { width: 160, height: 120 },
       tileDimensions: { width: 10, height: 10 },
-      walkableTiles: [3,5,6,8]
+      walkableTiles: [3,5,6,8],
+      collisionTiles: [1]
     });
 
     // render the map
