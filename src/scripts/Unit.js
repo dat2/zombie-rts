@@ -70,7 +70,7 @@ export class Unit extends Entity {
         return;
       }
 
-      // the first element in path returned by easy star contains our position
+      // the first element in path returned contains our position
       path.shift();
 
       // convert the tileCoordinate path to worldCoordinate path
@@ -81,9 +81,9 @@ export class Unit extends Entity {
       // visualization of the path
       path.forEach( (element) => {
         element.shape = this.game.add.graphics(element.x, element.y);  //init rect
-        element.shape.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
-        element.shape.beginFill(0x0000FF, 0.5); // color (0xFFFF0B), alpha (0 -> 1) // required settings
-        element.shape.drawRect(0, 0, 10, 10); // (x, y, w, h)
+        element.shape.lineStyle(2, 0x00FF00, 0.5); // width, color, alpha (0 -> 1) // required settings
+        element.shape.beginFill(0x00FF00, 0.2); // color, alpha (0 -> 1) // required settings
+        element.shape.drawRect(-5, -5, 10, 10); // (x, y, w, h)
       });
 
       // add it to the path queue

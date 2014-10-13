@@ -1,5 +1,5 @@
 var Phaser = window.Phaser;
-var easystar = require('easystar');
+var PF = require('PathFinding.js');
 
 export class GameMap {
   constructor({ game, mapName, dimensions, tileDimensions, walkableTiles, diagonals=true }) {
@@ -10,16 +10,32 @@ export class GameMap {
     this.tileDimensions = tileDimensions;
 
     // set grid stuff
-    this.pathfinder = game.plugins.add(Phaser.Plugin.PathFinderPlugin);
-    console.log(this.pathfinder);
-    this.pathfinder.setGrid(this._map.layer.data, walkableTiles);
+    this.grid = new PF.Grid(this.dimensions.width, this.dimensions.height,
+        this.createGrid(walkableTiles));
+    this.finder = new PF.AStarFinder({
+      allowDiagonal: true,
+      dontCrossCorners: true
+    });
   }
 
   render ({ tileset, tilesetImageKey, layer }) {
     // show it visually on screen
-    this._map.addTilesetImage(tileset, tilesetImageKey, this.dimensions.width, this.dimensions.height);
+    this._map.addTilesetImage(tileset, tilesetImageKey, this.dimensions.width,
+        this.dimensions.height);
     this.layer = this._map.createLayer(layer);
     this.layer.resizeWorld();
+  }
+
+  // create the easystarjs grid from the tilemap
+  createGrid(walkableTiles) {
+    var rtn = [];
+    for(let row = 0; row < this.dimensions.height; row++) {
+      rtn.push(new Array(this.dimensions.width));
+      for(let col = 0; col < this.dimensions.width; col++) {
+        rtn[row][col] = walkableTiles.indexOf(this._map.getTile(col, row).index) === -1 ? 1 : 0;
+      }
+    }
+    return rtn;
   }
 
   // convert coordinates on the grid to world (pixel) coordinates
@@ -45,8 +61,8 @@ export class GameMap {
     var { x: x1, y: y1 } = this.worldCoordsToTileCoords(pos1);
     var { x: x2, y: y2 } = this.worldCoordsToTileCoords(pos2);
 
-    this.pathfinder.setCallbackFunction(callback);
-    this.pathfinder.preparePathCalculation([x1, y1], [x2, y2]);
-    this.pathfinder.calculatePath();
+    var grid = this.grid.clone();
+    var path = this.finder.findPath(x1, y1, x2, y2, grid);
+    callback(path.map( element => { return { x: element[0], y: element[1]} }));
   }
 }

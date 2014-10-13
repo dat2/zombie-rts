@@ -21,9 +21,7 @@
   "dependencies": {
     "phaser": "~2.1.1",
     "almond": "~0.3.0",
-    "easystarjs": "~0.1.12",
-    "phaser-plugin-easystar": "~0.2.0",
-    "traceur": "~0.0.66"
+    "phaser-plugin-easystar": "~0.2.0"
   },
   "overrides": {
     "almond": {
