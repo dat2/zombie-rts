@@ -83,7 +83,7 @@ export default function start() {
   }
 
   function update() {
-    entityManager.update();
+    entityManager.update(map);
   }
 
   function render() {

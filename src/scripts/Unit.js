@@ -97,7 +97,8 @@ export class Unit extends Entity {
     });
   }
 
-  update () {
+  preUpdate () {
+    super();
     //while the sprite is not at the world position, keep moving
     if(this.game.physics.arcade.distanceToXY(this.sprite, this.position.x, this.position.y) > 6) {
       this.game.physics.arcade.moveToObject(this.sprite, this.position, this.speed);
@@ -109,6 +110,10 @@ export class Unit extends Entity {
       // to the next point in the queue
       this.iterateOverPath();
     }
+  }
+
+  postUpdate(map) {
+    super();
   }
 
   // render a rectangle around the unit if they are selected

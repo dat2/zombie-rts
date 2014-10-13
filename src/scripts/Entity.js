@@ -22,4 +22,11 @@ export class Entity {
   moveTo({ x, y }) {
     this.position = { x, y };
   }
+
+  preUpdate() {
+
+  }
+
+  postUpdate() {
+  }
 }

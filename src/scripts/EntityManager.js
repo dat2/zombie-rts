@@ -39,12 +39,15 @@ export class EntityManager {
     return _.uniqueId('unit_');
   }
 
-  update() {
+  update(gameMap) {
     this.entities.forEach( (entity) => {
-      entity.update();
+      entity.preUpdate();
+
       this.entities.forEach( (entity2) => {
         this.game.physics.arcade.collide(entity.sprite, entity2.sprite);
       });
+
+      entity.postUpdate(gameMap);
     });
   }
 
