@@ -58,19 +58,19 @@ export class Unit extends Entity {
 
   //find a path, and add it to the path queue
   findPath(map, worldPos, appendToQueue=false) {
-    let pos = this.position;
+    let startPos = this.position;
     // appendToQueue lets you add to the end for easy patrolling
     if(appendToQueue) {
-      pos = this.pathQueue[this.pathQueue.length - 1];
-      if(pos === undefined) {
-        pos = this.position;
+      startPos = this.pathQueue[this.pathQueue.length - 1];
+      if(startPos === undefined) {
+        startPos = this.position;
       }
     } else {
       // else, clear the queue before creating a new path
       this.clearQueue();
     }
 
-    map.findPath(pos, worldPos, (path) => {
+    map.findPath(startPos, worldPos, (path) => {
       // if no path was found, return
       if(path === null) {
         return;
