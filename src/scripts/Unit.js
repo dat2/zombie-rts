@@ -58,7 +58,8 @@ export class Unit extends Entity {
 
   //find a path, and add it to the path queue
   findPath(map, worldPos, appendToQueue=false) {
-    let startPos = this.position;
+    let { x, y } = this.sprite;
+    let startPos = { x, y };
     // appendToQueue lets you add to the end for easy patrolling
     if(appendToQueue) {
       startPos = this.pathQueue[this.pathQueue.length - 1];
@@ -100,8 +101,8 @@ export class Unit extends Entity {
   preUpdate () {
     super();
     //while the sprite is not at the world position, keep moving
-    if(this.game.physics.arcade.distanceToXY(this.sprite, this.position.x, this.position.y) > 6) {
-      this.game.physics.arcade.moveToObject(this.sprite, this.position, this.speed);
+    if(this.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) > 6) {
+      this.game.physics.arcade.moveToObject(this.sprite, this.target, this.speed);
     } else {
       //else stop moving, and update the units position to the new tile
       this.sprite.body.velocity.set(0);

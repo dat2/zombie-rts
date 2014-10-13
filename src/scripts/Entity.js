@@ -16,11 +16,11 @@ export class Entity {
 
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.collideWorldBounds = true;
-
+    this.target = { x, y };
   }
 
   moveTo({ x, y }) {
-    this.position = { x, y };
+    this.target = { x, y };
   }
 
   preUpdate() {
