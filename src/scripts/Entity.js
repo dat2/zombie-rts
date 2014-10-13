@@ -1,3 +1,4 @@
+var Phaser = window.Phaser;
 export class Entity {
 
   // x, y are tile coordinates, not pixel coordinates
@@ -13,7 +14,9 @@ export class Entity {
     this.sprite = this.game.add.sprite(x, y, spriteKey);
     this.sprite.anchor.set(0.5);
 
-    game.physics.arcade.enable(this.sprite);
+    game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
+    this.sprite.body.collideWorldBounds = true;
+
   }
 
   moveTo({ x, y }) {

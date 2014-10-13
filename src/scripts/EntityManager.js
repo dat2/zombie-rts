@@ -40,7 +40,12 @@ export class EntityManager {
   }
 
   update() {
-    this.entities.forEach( (entity) => entity.update() );
+    this.entities.forEach( (entity) => {
+      entity.update();
+      this.entities.forEach( (entity2) => {
+        this.game.physics.arcade.collide(entity.sprite, entity2.sprite);
+      });
+    });
   }
 
   render() {
