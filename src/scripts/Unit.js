@@ -7,8 +7,9 @@ export class Unit extends Entity {
 
     this.pathQueue = [];
 
+    // graphics for selected units
     this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, 14, 14);
-    this.selectedGraphics = this.game.add.graphics(0, 0);  //init rect
+    this.selectedGraphics = this.game.add.graphics(0, 0); // initialize here so we can destroy later
   }
 
   // elements should be an array
@@ -28,15 +29,18 @@ export class Unit extends Entity {
     }
   }
 
+  // get the next point on the path
   getNextPoint() {
     return this.pathQueue.shift();
   }
 
+  // select and render the selected rectangle
   select() {
     this.selected = true;
     this.renderSelected();
   }
 
+  // deselect the unit, and destroy the selected rectangle
   deselect() {
     this.selected = false;
     this.selectedGraphics.destroy();
@@ -53,14 +57,16 @@ export class Unit extends Entity {
   }
 
   //find a path, and add it to the path queue
-  findPath(map, worldPos, endOfQueue=false) {
+  findPath(map, worldPos, appendToQueue=false) {
     let pos = this.position;
-    if(endOfQueue) {
+    // appendToQueue lets you add to the end for easy patrolling
+    if(appendToQueue) {
       pos = this.pathQueue[this.pathQueue.length - 1];
       if(pos === undefined) {
         pos = this.position;
       }
     } else {
+      // else, clear the queue before creating a new path
       this.clearQueue();
     }
 
@@ -105,22 +111,23 @@ export class Unit extends Entity {
     }
   }
 
+  // render a rectangle around the unit if they are selected
   renderSelected() {
     if(this.selected) {
       this.selectedGraphics.destroy();
 
       this.selectedGraphics = this.game.add.graphics(this.selectedRect.x, this.selectedRect.y);
       this.selectedGraphics.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
-      this.selectedGraphics.beginFill(0x0000FF, 0.2); // color (0xFFFF0B), alpha (0 -> 1) // required settings
+      // this.selectedGraphics.beginFill(0x0000FF, 0.2); // color (0xFFFF0B), alpha (0 -> 1) // required settings
       this.selectedGraphics.drawRect(0, 0, this.selectedRect.width, this.selectedRect.height); // (x, y, w, h)
     }
   }
 
   render() {
+    // move the selected rect
     this.selectedRect.centerX = this.sprite.x;
     this.selectedRect.centerY = this.sprite.y;
 
     this.renderSelected();
-    this.game.world.bringToTop(this.sprite);
   }
 }
