@@ -1,3 +1,4 @@
+var Phaser = window.Phaser;
 var easystar = require('easystar');
 
 export class GameMap {
@@ -9,15 +10,9 @@ export class GameMap {
     this.tileDimensions = tileDimensions;
 
     // set grid stuff
-    var _grid = new easystar.js();
-    _grid.setGrid(this.createGridFromMap());
-    _grid.setAcceptableTiles(walkableTiles);
-    if(diagonals) {
-      _grid.enableDiagonals();
-    }
-    _grid.setIterationsPerCalculation(500);
-
-    this.grid = _grid;
+    this.pathfinder = game.plugins.add(Phaser.Plugin.PathFinderPlugin);
+    console.log(this.pathfinder);
+    this.pathfinder.setGrid(this._map.layer.data, walkableTiles);
   }
 
   render ({ tileset, tilesetImageKey, layer }) {
@@ -25,18 +20,6 @@ export class GameMap {
     this._map.addTilesetImage(tileset, tilesetImageKey, this.dimensions.width, this.dimensions.height);
     this.layer = this._map.createLayer(layer);
     this.layer.resizeWorld();
-  }
-
-  // create the easystarjs grid from the tilemap
-  createGridFromMap() {
-    var rtn = [];
-    for(let row = 0; row < this.dimensions.height; row++) {
-      rtn.push(new Array(this.dimensions.width));
-      for(let col = 0; col < this.dimensions.width; col++) {
-        rtn[row][col] = this._map.getTile(col, row).index;
-      }
-    }
-    return rtn;
   }
 
   // convert coordinates on the grid to world (pixel) coordinates
@@ -59,9 +42,11 @@ export class GameMap {
 
   //find a path from the first position to the second one
   findPath(pos1, pos2, callback) {
-    var tilePos1 = this.worldCoordsToTileCoords(pos1);
-    var tilePos2 = this.worldCoordsToTileCoords(pos2);
-    this.grid.findPath(tilePos1.x, tilePos1.y, tilePos2.x, tilePos2.y, callback);
-    this.grid.calculate();
+    var { x: x1, y: y1 } = this.worldCoordsToTileCoords(pos1);
+    var { x: x2, y: y2 } = this.worldCoordsToTileCoords(pos2);
+
+    this.pathfinder.setCallbackFunction(callback);
+    this.pathfinder.preparePathCalculation([x1, y1], [x2, y2]);
+    this.pathfinder.calculatePath();
   }
 }
