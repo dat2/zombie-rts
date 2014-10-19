@@ -1,3 +1,4 @@
+import { Unit } from 'Unit';
 var Phaser = window.Phaser;
 
 export class SelectionHandler {
@@ -61,6 +62,15 @@ export class SelectionHandler {
         entity.select();
       });
 
+      //deselect entities that do not intersect the rectangle
+      entities = this.entityManager.filterEntities( (entity) => {
+        return entity instanceof Unit &&
+          !Phaser.Rectangle.intersects(this.selectionRect, entity.rect);
+      });
+      entities.forEach( (entity) => {
+        entity.deselect();
+      });
+
       this.drawGraphics();
     });
 
@@ -107,7 +117,8 @@ export class SelectionHandler {
         this.selectionRect.width = 0;
         this.selectionRect.height = 0;
 
-        this.selectedEntities = this.entityManager.filterEntities( (entity) => entity.selected );
+        this.selectedEntities =
+          this.entityManager.filterEntities( (entity) => entity.selected );
       }
       this.graphics.destroy();
     });
