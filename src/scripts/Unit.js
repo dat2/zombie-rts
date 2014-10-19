@@ -64,7 +64,7 @@ export class Unit extends Entity {
     if(appendToQueue) {
       startPos = this.pathQueue[this.pathQueue.length - 1];
       if(startPos === undefined) {
-        startPos = this.position;
+        startPos = { x, y };
       }
     } else {
       // else, clear the queue before creating a new path
@@ -98,10 +98,10 @@ export class Unit extends Entity {
     });
   }
 
-  preUpdate () {
+  postUpdate () {
     super();
     //while the sprite is not at the world position, keep moving
-    if(this.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) > 6) {
+    if(this.game.physics.arcade.distanceToXY(this.sprite, this.target.x, this.target.y) > 10) {
       this.game.physics.arcade.moveToObject(this.sprite, this.target, this.speed);
     } else {
       //else stop moving, and update the units position to the new tile
@@ -111,10 +111,6 @@ export class Unit extends Entity {
       // to the next point in the queue
       this.iterateOverPath();
     }
-  }
-
-  postUpdate(map) {
-    super();
   }
 
   // render a rectangle around the unit if they are selected

@@ -49,7 +49,7 @@ export class EntityManager {
         this.game.physics.arcade.collide(entity.sprite, entity2.sprite);
       });
 
-      entity.postUpdate(map);
+      entity.postUpdate();
     });
   }
 
