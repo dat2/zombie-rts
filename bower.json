@@ -21,7 +21,6 @@
   "dependencies": {
     "phaser": "~2.1.1",
     "almond": "~0.3.0",
-    "phaser-plugin-easystar": "~0.2.0"
   },
   "overrides": {
     "almond": {
@@ -29,9 +28,6 @@
     },
     "easystarjs": {
       "main": "./bin/easystar-0.1.13.min.js"
-    },
-    "phaser-plugin-easystar": {
-      "main": "./bin/phaser_pathfinding-0.2.0.min.js"
     }
   }
 }
