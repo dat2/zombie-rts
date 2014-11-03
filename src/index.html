@@ -23,7 +23,9 @@
 
   <!-- bootstrapping the game -->
   <script>
-    window.game = require('main')['default']();
+    require(['main'], function(main) {
+      main['default']();
+    });
   </script>
 </body>
 </html>

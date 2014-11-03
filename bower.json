@@ -20,14 +20,11 @@
   ],
   "dependencies": {
     "phaser": "~2.1.1",
-    "almond": "~0.3.0",
+    "almond": "~0.3.0"
   },
   "overrides": {
     "almond": {
       "ignore": true
-    },
-    "easystarjs": {
-      "main": "./bin/easystar-0.1.13.min.js"
     }
   }
 }
