@@ -1,0 +1,6 @@
+swarm path finding
+==================
+a swarm is a collection of units. The AI for the swarm stores a single path,
+and just tells each unit to move in the general direction between nodes on the
+path. if units movement will cause them to collide, units will move in a
+different direction until they don't collide, or stop, whichever is "better".
