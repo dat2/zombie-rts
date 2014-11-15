@@ -1,4 +1,4 @@
-import Entity from 'Entity';
+import Entity from 'Entities/Entity';
 var Phaser = window.Phaser;
 
 export default class Camera extends Entity {

@@ -4,6 +4,7 @@ var gulp = require('gulp'),
 var mainBowerFiles = require('main-bower-files'),
   del = require('del'),
   browserSync = require('browser-sync'),
+  path = require('path'),
   reload = browserSync.reload;
 
 var paths = {
@@ -20,16 +21,26 @@ gulp.task('clean', function(done) {
 });
 
 gulp.task('scripts', function() {
-  return gulp.src(paths.scriptsDir + '*.js')
+  return gulp.src(paths.scriptsDir + '{,**/}*.js')
     .pipe(g.plumber())
+    .pipe(g.sourcemaps.init())
     .pipe(g['6to5']())
     .pipe(g.header('define(\'<%= getModuleName(file) %>\', function(require, exports, module) {', {
       getModuleName: function(file) {
-        return file.path.substring(file.base.length, file.path.lastIndexOf('.'));
+        var indexOfBaseDir = file.path.indexOf(paths.scriptsDir);
+
+        // the module name will be the folders after basedir, all the way
+        // to the filename without the extension.
+        // eg. /src/scripts/a/b/c/d.js => a/b/c/d
+        var moduleName = file.path.substring(indexOfBaseDir +
+          paths.scriptsDir.length, file.path.lastIndexOf('.'));
+
+        return moduleName;
       }
     }))
     .pipe(g.footer('});'))
     .pipe(g.changed(paths.devDir))
+    .pipe(g.sourcemaps.write('.'))
     .pipe(gulp.dest(paths.devDir))
     .pipe(reload({stream:true}));
 });
@@ -66,7 +77,7 @@ gulp.task('index', ['clean', 'scripts'], function() {
 
 gulp.task('serve', ['index', 'scripts'], function() {
   gulp.watch(paths.imagesDir, ['imagemin']);
-  gulp.watch(paths.scriptsDir + '*', ['scripts']);
+  gulp.watch(paths.scriptsDir + '{,**/}*', ['scripts']);
   gulp.watch(paths.index, ['index']);
 
   browserSync({

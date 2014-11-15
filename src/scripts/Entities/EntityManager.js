@@ -1,5 +1,5 @@
-import Unit from 'Unit';
-import Camera from 'Camera';
+import Unit from 'Units/Unit';
+import Camera from 'Camera/Camera';
 var _ = require('lodash');
 
 export default class EntityManager {

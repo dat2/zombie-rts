@@ -1,4 +1,4 @@
-import Unit from 'Unit';
+import Unit from 'Units/Unit';
 var Phaser = window.Phaser;
 
 export default class SelectionHandler {
@@ -101,9 +101,9 @@ export default class SelectionHandler {
 
         this.selectedEntities.forEach( (entity) => {
           if(this.shiftKey.isDown) {
-            entity.findPath(this.map, worldPos, true);
+            entity.AI.moveTo(this.map, worldPos, true);
           } else {
-            entity.findPath(this.map, worldPos);
+            entity.AI.moveTo(this.map, worldPos);
           }
         });
       }

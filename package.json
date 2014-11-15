@@ -23,6 +23,7 @@
     "gulp-inject": "^1.0.2",
     "gulp-load-plugins": "^0.6.0",
     "gulp-plumber": "^0.6.5",
+    "gulp-sourcemaps": "^1.2.8",
     "main-bower-files": "^2.0.0"
   }
 }
