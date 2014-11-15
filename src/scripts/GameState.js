@@ -1,4 +1,4 @@
-export class GameState {
+export default class GameState {
   constructor(game) {
     this.setScreenDimensions(game);
   }

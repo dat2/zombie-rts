@@ -1,5 +1,5 @@
 var Phaser = window.Phaser;
-export class Entity {
+export default class Entity {
 
   // x, y are tile coordinates, not pixel coordinates
   constructor({ x, y, game , speed, spriteKey}) {
