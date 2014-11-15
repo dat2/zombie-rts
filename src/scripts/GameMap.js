@@ -1,9 +1,9 @@
 var Phaser = window.Phaser;
 var PF = require('PathFinding.js');
 
-export class GameMap {
+export default class GameMap {
   constructor({ game, mapName, dimensions, tileDimensions,
-    walkableTiles, collisionTiles, diagonals=true }) {
+    walkableTiles, collisionTiles, diagonals }) {
     this._map = game.add.tilemap(mapName);
     this._map.setCollision(collisionTiles, true);
 

@@ -1,7 +1,7 @@
-import { Unit } from 'Unit';
+import Unit from 'Unit';
 var Phaser = window.Phaser;
 
-export class SelectionHandler {
+export default class SelectionHandler {
   constructor({game, entityManager, map}) {
     this.game = game;
     this.entityManager = entityManager;

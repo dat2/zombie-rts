@@ -1,9 +1,9 @@
-import { Unit } from 'Unit';
-import { GameState } from 'GameState';
-import { GameMap } from 'GameMap';
-import { EntityManager } from 'EntityManager';
-import { SelectionHandler } from 'SelectionHandler';
-import { CameraHandler } from 'CameraHandler';
+import Unit from 'Unit';
+import GameState from 'GameState';
+import GameMap from 'GameMap';
+import EntityManager from 'EntityManager';
+import SelectionHandler from 'SelectionHandler';
+import CameraHandler from 'CameraHandler';
 
 export default function start() {
   var Phaser = window.Phaser;

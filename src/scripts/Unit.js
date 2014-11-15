@@ -1,7 +1,7 @@
-import { Entity } from 'Entity';
+import Entity from 'Entity';
 var Phaser = window.Phaser;
 
-export class Unit extends Entity {
+export default class Unit extends Entity {
   constructor({ x, y, game, spriteKey, speed }) {
     super({ x, y, game, speed , spriteKey});
 

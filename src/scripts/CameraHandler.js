@@ -1,6 +1,6 @@
 var Phaser = window.Phaser;
 
-export class CameraHandler {
+export default class CameraHandler {
   constructor({game, entityManager, map, cursors, cameraProperties, edgePixels}) {
     this.game = game;
     this.entityManager = entityManager;

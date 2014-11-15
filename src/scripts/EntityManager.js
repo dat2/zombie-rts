@@ -1,8 +1,8 @@
-import { Unit } from 'Unit';
-import { Camera } from 'Camera';
+import Unit from 'Unit';
+import Camera from 'Camera';
 var _ = require('lodash');
 
-export class EntityManager {
+export default class EntityManager {
   constructor({game}) {
     this.game = game;
 

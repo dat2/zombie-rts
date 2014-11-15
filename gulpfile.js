@@ -3,7 +3,7 @@ var gulp = require('gulp'),
 
 var mainBowerFiles = require('main-bower-files'),
   del = require('del'),
-  browserSync = require('browser-sync')
+  browserSync = require('browser-sync'),
   reload = browserSync.reload;
 
 var paths = {
@@ -22,10 +22,13 @@ gulp.task('clean', function(done) {
 gulp.task('scripts', function() {
   return gulp.src(paths.scriptsDir + '*.js')
     .pipe(g.plumber())
-    .pipe(g.es6Transpiler())
-    .pipe(g.es6ModuleTranspiler({
-      type: 'amd',
+    .pipe(g['6to5']())
+    .pipe(g.header('define(\'<%= getModuleName(file) %>\', function(require, exports, module) {', {
+      getModuleName: function(file) {
+        return file.path.substring(file.base.length, file.path.lastIndexOf('.'));
+      }
     }))
+    .pipe(g.footer('});'))
     .pipe(g.changed(paths.devDir))
     .pipe(gulp.dest(paths.devDir))
     .pipe(reload({stream:true}));
@@ -49,7 +52,8 @@ gulp.task('index', ['clean', 'scripts'], function() {
     ))
     .pipe(g.inject(
       gulp.src(
-        mainBowerFiles()
+        ['node_modules/gulp-6to5/node_modules/6to5/browser-polyfill.js']
+        .concat(mainBowerFiles())
         .concat(['vendor/*']), {
           read: false
         }), {
@@ -69,7 +73,7 @@ gulp.task('serve', ['index', 'scripts'], function() {
     open: false,
     online: false,
     server: {
-      baseDir: './',
+      baseDir: ['./', '.tmp'],
       index: paths.devDir + 'index.html',
     }
   });
