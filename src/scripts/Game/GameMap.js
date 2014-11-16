@@ -65,6 +65,6 @@ export default class GameMap {
 
     var grid = this.grid.clone();
     var path = this.finder.findPath(x1, y1, x2, y2, grid);
-    callback(path.map( element => { return { x: element[0], y: element[1]} }));
+    callback(path.map( element => { return { x: element[0], y: element[1] }; }));
   }
 }
