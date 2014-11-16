@@ -1,10 +1,28 @@
 unit movement ai
 ================
-moving, and idle state
+There are two states: MOVING and IDLE.
 
-in the moving state, if they keep colliding, they will move in a random
-direction to let other units pass by them
+In the MOVING state, the unit will try to reach their target on the path queue.
+If the unit reaches their target, then they switch to the idle state. The
+iterateOverPath() method will check if they still have more of the path to go,
+then switches them back to the MOVING state. If the unit keeps colliding with
+other units, or the world, then they will move in a random direction to let
+other units pass by them. The MAX_COLLISIONS variable determines how quickly
+they do this, and the RANGE variable determines how far they move in that
+random direction.
 
-in the idle state, they let other units push them around
+In the idle state, they let other units push them around as a simple solution
+for now.
 
+squad movement ai
+=================
+This is very simple. There is only one method: moveTo. This method will generate
+a position for every unit in the squad nearby the mouse click. The idea is
+for the units to end up in a square, with the middle of the square being
+centered onto the mouse position.
 
+if you have 9 units, m is where the mouse is clicked (and where a unit will
+end up) and u is a unit.
+u u u
+u m u
+u u u
