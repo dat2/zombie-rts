@@ -51,6 +51,7 @@ export default function start() {
 
     debugKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
     debugKey.onDown.add(() => { debugger; });
+
     entityManager = new EntityManager({game});
 
     selectionHandler = new SelectionHandler({game, entityManager, map});
@@ -67,17 +68,14 @@ export default function start() {
     }
 
     // add random entities
-    for(let xi = 30; xi <= 42; xi++)
+    for(let xi = 30; xi <= 35; xi++)
     {
-      for(let yi = 25; yi <= 30; yi++)
+      for(let yi = 25; yi <= 25; yi++)
       {
         let { x, y } = map.tileCoordsToWorldCoords({x: xi, y: yi});
         entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
       }
     }
-
-    console.log('From main!');
-
     /*
     {
       let { x, y } = map.tileCoordsToWorldCoords({x: 43, y: 27});
