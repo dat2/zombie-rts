@@ -7,6 +7,7 @@ export default class Zombie extends Entity {
 
     this.game = game;
     this.MoveAI = new ZombieMovementAI({ zombie: this });
+    this.AttackAI = new ZombieAttackAI({ zombie: this });
   }
 
   update() {
