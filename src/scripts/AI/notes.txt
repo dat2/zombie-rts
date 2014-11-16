@@ -19,7 +19,8 @@ squad movement ai
 This is very simple. There is only one method: moveTo. This method will generate
 a position for every unit in the squad nearby the mouse click. The idea is
 for the units to end up in a square, with the middle of the square being
-centered onto the mouse position.
+centered onto the mouse position. After the positions are generated, it simply
+tells the unit to move to the position.
 
 if you have 9 units, m is where the mouse is clicked (and where a unit will
 end up) and u is a unit.
