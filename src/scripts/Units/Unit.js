@@ -1,5 +1,5 @@
 import Entity from 'Entities/Entity';
-import UnitMovementAI from 'AI/UnitMovementAI';
+import { UnitMovementAI } from 'AI/UnitAI';
 var Phaser = window.Phaser;
 
 export default class Unit extends Entity {
@@ -7,11 +7,17 @@ export default class Unit extends Entity {
     super({ x, y, game, speed , spriteKey});
 
     this.game = game;
-    this.AI = new UnitMovementAI({ unit: this });
+    this.MoveAI = new UnitMovementAI({ unit: this });
 
     // graphics for selected units
     this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, 14, 14);
     this.selectedGraphics = this.game.add.graphics(0, 0); // initialize here so we can destroy later
+
+    this.sprite.body.drag.x = 100;
+    this.sprite.body.drag.y = 100;
+
+    this.rect = new Phaser.Rectangle(x - this.sprite.width / 2,
+      y - this.sprite.height / 2, this.sprite.width, this.sprite.height);
   }
 
   // select and render the selected rectangle
@@ -26,8 +32,17 @@ export default class Unit extends Entity {
     this.selectedGraphics.destroy();
   }
 
+  update() {
+    super();
+    this.MoveAI.update();
+  }
+
   postUpdate() {
-    this.AI.postUpdate();
+    super();
+    // update rect for selection
+    let { x, y } = this.sprite;
+    this.rect = new Phaser.Rectangle(x - this.sprite.width / 2,
+      y - this.sprite.height / 2, this.sprite.width, this.sprite.height);
   }
 
   // render a rectangle around the unit if they are selected

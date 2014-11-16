@@ -1,0 +1,10 @@
+unit movement ai
+================
+moving, and idle state
+
+in the moving state, if they keep colliding, they will move in a random
+direction to let other units pass by them
+
+in the idle state, they let other units push them around
+
+
