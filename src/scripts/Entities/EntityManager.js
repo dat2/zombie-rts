@@ -31,8 +31,8 @@ export default class EntityManager {
     return this._entities['camera'];
   }
 
-  getUnit(unitId) {
-    return this._entities[unitId];
+  getEntity(entityId) {
+    return this._entities[entityId];
   }
 
   generateUIDForUnit() {
@@ -41,18 +41,26 @@ export default class EntityManager {
 
   update(map) {
     this.entities.forEach( (entity) => {
+      // pre update
       entity.preUpdate();
 
+      // collide with the map
       this.game.physics.arcade.collide(entity.sprite, map.layer);
 
+      // collide with all other entities (look into a quad tree implementation?)
       this.entities.forEach( (entity2) => {
         this.game.physics.arcade.collide(entity.sprite, entity2.sprite);
       });
 
+      // update
+      entity.update();
+
+      // post update if required
       entity.postUpdate();
     });
   }
 
+  // render all entities
   render() {
     this.entities.forEach( (entity) => entity.render() );
   }
