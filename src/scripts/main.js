@@ -26,6 +26,7 @@ export default function start() {
     game.load.tilemap('map', 'assets/map2.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.image('character', 'assets/images/character.png');
     game.load.image('tileset', 'assets/images/tile_sheet.png');
+    game.load.image('zombie', 'assets/images/zombie.png');
   }
 
   function create() {
@@ -33,6 +34,7 @@ export default function start() {
     game.canvas.oncontextmenu = (e) => e.preventDefault();
 
     state = new GameState(game);
+    game.gameState = state;
     map = new GameMap({
       game,
       mapName: 'map',
@@ -41,6 +43,7 @@ export default function start() {
       walkableTiles: [3,5,6,8],
       collisionTiles: [1]
     });
+    game.map = map;
 
     // render the map
     map.render({
@@ -53,6 +56,7 @@ export default function start() {
     debugKey.onDown.add(() => { debugger; });
 
     entityManager = new EntityManager({game});
+    game.entityManager = entityManager;
 
     selectionHandler = new SelectionHandler({game, entityManager, map});
     selectionHandler.handle();
@@ -68,28 +72,20 @@ export default function start() {
     }
 
     // add random entities
-    for(let xi = 30; xi <= 35; xi++)
+    for(let xi = 30; xi <= 33; xi++)
     {
-      for(let yi = 25; yi <= 25; yi++)
+      for(let yi = 25; yi <= 26; yi++)
       {
-        let { x, y } = map.tileCoordsToWorldCoords({x: xi, y: yi});
-        entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
+        let pos = map.tileCoordsToWorldCoords({x: xi, y: yi});
+        entityManager.createUnit({x: pos.x, y: pos.y, game, spriteKey: 'character', speed: 100, maxHealth: 100});
       }
     }
-    /*
-    {
-      let { x, y } = map.tileCoordsToWorldCoords({x: 43, y: 27});
-      let entityId = entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
-      let entity = entityManager._entities[entityId];
-      entity.moveTo(map.tileCoordsToWorldCoords({x:60, y:27}));
-    }
-    */
 
-    /*
-    {
-      let { x, y } = map.tileCoordsToWorldCoords({x: 42, y: 30});
-      entityManager.addUnit({x, y, game, spriteKey: 'character', speed: 100});
-    }*/
+    let { x, y } = map.tileCoordsToWorldCoords({ x:32, y:20 });
+    entityManager.createZombie({ x, y, game, spriteKey: 'zombie', speed: 20, maxHealth: 50});
+
+    let { x, y } = map.tileCoordsToWorldCoords({ x:32, y:50 });
+    entityManager.createZombie({ x, y, game, spriteKey: 'zombie', speed: 20, maxHealth: 50});
   }
 
   function update() {

@@ -6,8 +6,8 @@ const BODY_DRAG = 175;
 const SELECTED_RECT_SIZE = 14;
 
 export default class Unit extends Entity {
-  constructor({ x, y, game, spriteKey, speed }) {
-    super({ x, y, game, speed , spriteKey});
+  constructor({ x, y, game, spriteKey, speed, maxHealth }) {
+    super({ x, y, game, speed , spriteKey, maxHealth});
 
     this.game = game;
     this.MoveAI = new UnitMovementAI({ unit: this });
