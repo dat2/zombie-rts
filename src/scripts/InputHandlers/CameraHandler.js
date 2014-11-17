@@ -1,22 +1,31 @@
 var Phaser = window.Phaser;
 
+const CAMERA_MOVEMENT_SPEED = 300;
 export default class CameraHandler {
   constructor({game, entityManager, map, cursors, cameraProperties, edgePixels}) {
     this.game = game;
     this.entityManager = entityManager;
     this.map = map;
-
-    // create a camera unit
-    this.camera = this.entityManager.createCamera(cameraProperties);
     this.cursors = cursors;
 
-    // the zone that triggers horizontal movement
-    this.deadHorizontalRect = new Phaser.Rectangle(0, 0, game.width - (edgePixels * 2), game.height);
+    // create a camera unit
+    this.entityManager.createCamera(cameraProperties);
+    this.camera = this.entityManager.getEntity('camera');
+
+    this.createHorizontalMouseZone(edgePixels);
+    this.createVerticalMouseZone(edgePixels);
+  }
+
+  // the zone that triggers horizontal movement
+  createHorizontalMouseZone(edgePixels) {
+    this.deadHorizontalRect = new Phaser.Rectangle(0, 0, this.game.width - (edgePixels * 2), this.game.height);
     this.deadHorizontalRect.centerX = this.game.camera.view.centerX;
     this.deadHorizontalRect.centerY = this.game.camera.view.centerY;
+  }
 
-    // the zone that triggers vertical movement
-    this.deadVerticalRect = new Phaser.Rectangle(0, 0, game.width, game.height - (edgePixels * 2));
+  // the zone that triggers vertical movement
+  createVerticalMouseZone(edgePixels) {
+    this.deadVerticalRect = new Phaser.Rectangle(0, 0, this.game.width, this.game.height - (edgePixels * 2));
     this.deadVerticalRect.centerX = this.game.camera.view.centerX;
     this.deadVerticalRect.centerY = this.game.camera.view.centerY;
   }
@@ -30,47 +39,69 @@ export default class CameraHandler {
   }
 
   handle() {
+    this.registerCameraKeys();
+    this.registerMouseMovementCallback();
+  }
+
+  registerCameraKeys() {
+    this.registerHorizontalKeys();
+    this.registerVerticalKeys();
+  }
+
+  registerHorizontalKeys() {
     // move horizontally
     this.cursors.left.onDown.add( () => {
-      this.moveHorizontal(-300);
+      this.moveHorizontal(-CAMERA_MOVEMENT_SPEED);
     });
     this.cursors.right.onDown.add( () => {
-      this.moveHorizontal(300);
-    });
-
-    // move vertically
-    this.cursors.up.onDown.add( () => {
-      this.moveVertical(-300);
-    });
-    this.cursors.down.onDown.add( () => {
-      this.moveVertical(300);
+      this.moveHorizontal(CAMERA_MOVEMENT_SPEED);
     });
 
     // stop moving horizontally when the arrow keys are lifted
     let xLambda = () => { this.moveHorizontal(0); };
     this.cursors.left.onUp.add(xLambda);
     this.cursors.right.onUp.add(xLambda);
+  }
+
+  registerVerticalKeys() {
+    // move vertically
+    this.cursors.up.onDown.add( () => {
+      this.moveVertical(-CAMERA_MOVEMENT_SPEED);
+    });
+    this.cursors.down.onDown.add( () => {
+      this.moveVertical(CAMERA_MOVEMENT_SPEED);
+    });
 
     // stop moving vertically when the arrow keys are lifted
     let yLambda = () => { this.moveVertical(0); };
     this.cursors.up.onUp.add(yLambda);
     this.cursors.down.onUp.add(yLambda);
+  }
 
-    // mouse movement
+  registerMouseMovementCallback() {
     this.game.input.addMoveCallback( (pointer) => {
-      let outsideHorizontalRect = !Phaser.Rectangle.containsPoint(this.deadHorizontalRect, pointer);
-      if(outsideHorizontalRect) {
-        this.moveHorizontal(300 * (pointer.x > this.deadHorizontalRect.centerX ? 1 : -1));
-      } else {
-        this.moveHorizontal(0);
-      }
-
-      let outsideVerticalRect = !Phaser.Rectangle.containsPoint(this.deadVerticalRect, pointer);
-      if(outsideVerticalRect) {
-        this.moveVertical(300 * (pointer.y > this.deadVerticalRect.centerY ? 1 : -1));
-      } else {
-        this.moveVertical(0);
-      }
+      this.registerHorizontalMovement(pointer);
+      this.registerVerticalMovement(pointer);
     });
+  }
+
+  // when the mouse is outside the horizontal dead zone, the camera should move
+  registerHorizontalMovement(pointer) {
+    let outsideHorizontalRect = !Phaser.Rectangle.containsPoint(this.deadHorizontalRect, pointer);
+    if(outsideHorizontalRect) {
+      this.moveHorizontal(CAMERA_MOVEMENT_SPEED * (pointer.x > this.deadHorizontalRect.centerX ? 1 : -1));
+    } else {
+      this.moveHorizontal(0);
+    }
+  }
+
+  // when the mouse is outside the vertical zone, the camera should move
+  registerVerticalMovement(pointer) {
+    let outsideVerticalRect = !Phaser.Rectangle.containsPoint(this.deadVerticalRect, pointer);
+    if(outsideVerticalRect) {
+      this.moveVertical(CAMERA_MOVEMENT_SPEED * (pointer.y > this.deadVerticalRect.centerY ? 1 : -1));
+    } else {
+      this.moveVertical(0);
+    }
   }
 }

@@ -1,4 +1,5 @@
 import Unit from 'Units/Unit';
+import Zombie from 'Zombies/Zombie';
 import Camera from 'Camera/Camera';
 var _ = require('lodash');
 
@@ -20,23 +21,28 @@ export default class EntityManager {
     return;
   }
 
-  addUnit(unitProperties, unitId = this.generateUIDForUnit()) {
+  createUnit(unitProperties, unitId = this.generateUID('unit_')) {
     this._entities[unitId] = new Unit(unitProperties);
     return unitId;
   }
 
+  createZombie(zombieProperties, zombieId = this.generateUID('zombie_')) {
+    this._entities[zombieId] = new Zombie(zombieProperties);
+    return zombieId;
+  }
+
   createCamera(cameraProperties) {
-    this._entities['camera'] = new Camera(cameraProperties);
-    this.game.camera.follow(this._entities['camera'].sprite);
-    return this._entities['camera'];
+    this._entities.camera = new Camera(cameraProperties);
+    this.game.camera.follow(this._entities.camera.sprite);
+    return 'camera';
   }
 
   getEntity(entityId) {
     return this._entities[entityId];
   }
 
-  generateUIDForUnit() {
-    return _.uniqueId('unit_');
+  generateUID(prefix) {
+    return _.uniqueId(prefix);
   }
 
   update(map) {

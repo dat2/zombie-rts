@@ -8,23 +8,18 @@ export default class SelectionHandler {
     this.entityManager = entityManager;
     this.map = map;
 
-    this.selectionRect = new Phaser.Rectangle(0, 0, 0, 0);
-    this.selectionRectGraphics = this.game.add.graphics(0, 0);
-
-    this.selectedUnits = [];
+    // instance variables
     this.dragging = false;
     this.dragStartPos = { x: 0, y: 0 };
 
+    this.selectedUnits = [];
+
+    // keys
     this.shiftKey = game.input.keyboard.addKey(Phaser.Keyboard.SHIFT);
-  }
 
-  drawSelectionRect() {
-    this.selectionRectGraphics.destroy();
-
-    this.selectionRectGraphics = this.game.add.graphics(this.selectionRect.x, this.selectionRect.y);
-    this.selectionRectGraphics.lineStyle(2, 0x00FF00, 1); // width, color, alpha (0 -> 1) // required settings
-    this.selectionRectGraphics.beginFill(0x00FF00, 0.5); // color, alpha (0 -> 1) // required settings
-    this.selectionRectGraphics.drawRect(0, 0, this.selectionRect.width, this.selectionRect.height);
+    // visuals
+    this.selectionRect = new Phaser.Rectangle(0, 0, 0, 0);
+    this.selectionRectGraphics = this.game.add.graphics(0, 0);
   }
 
   handle() {
@@ -73,7 +68,7 @@ export default class SelectionHandler {
     // set each unit inside the rectangle's selected property to true
     let units = this.entityManager.filterEntities( (entity) => {
       //prevent the camera from being detected
-      return entity.sprite.visible &&
+      return entity instanceof Unit &&
         Phaser.Rectangle.intersects(this.selectionRect, entity.rect);
     });
     units.forEach( (entity) => {
@@ -90,6 +85,17 @@ export default class SelectionHandler {
     units.forEach( (entity) => {
       entity.deselect();
     });
+  }
+
+  drawSelectionRect() {
+    // always destroy before we start to replace it, otherwise phaser doesn't destroy
+    // it
+    this.selectionRectGraphics.destroy();
+
+    this.selectionRectGraphics = this.game.add.graphics(this.selectionRect.x, this.selectionRect.y);
+    this.selectionRectGraphics.lineStyle(2, 0x00FF00, 1); // width, color, alpha [0,1] required settings
+    this.selectionRectGraphics.beginFill(0x00FF00, 0.5); // color, alpha [0,1] required settings
+    this.selectionRectGraphics.drawRect(0, 0, this.selectionRect.width, this.selectionRect.height);
   }
 
   registerMouseDownCallback() {
@@ -126,7 +132,7 @@ export default class SelectionHandler {
 
     // TODO move this later
     let squad = new Squad(this.selectedUnits.length, this.selectedUnits);
-    squad.MoveAI.moveTo(this.map, worldPos, this.shiftKey.isDown);
+    squad.MoveAI.findPathsTo(this.map, worldPos, this.shiftKey.isDown);
   }
 
   registerMouseUpCallback() {

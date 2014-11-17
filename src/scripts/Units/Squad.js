@@ -1,9 +1,10 @@
 import Unit from './Unit';
 import { SquadMovementAI } from 'AI/SquadAI';
 
+const MAX_UNITS = 10;
 export default class Squad {
 
-  constructor(maxUnits = 10, units = []) {
+  constructor(maxUnits = MAX_UNITS, units = []) {
     this.maxUnits = maxUnits;
     this.units = units;
 

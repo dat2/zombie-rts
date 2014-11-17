@@ -8,12 +8,4 @@ export default class Camera extends Entity {
     this.sprite.visible = false;
     this.sprite.body.immovable = true; // no other entity should move this
   }
-
-  update() {
-    // do nothing ?
-  }
-
-  render() {
-
-  }
 }
