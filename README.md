@@ -1,9 +1,11 @@
 zombie-rts
-=========
+==========
 
-A JavaScript next zombie RTS game. Trello board is
+A JavaScript Next zombie RTS game. Trello board is
 [here](https://trello.com/b/l5yqHRK9/zombie-rts) but this is not public.
 I shall eventually create a publicly readable google docs with the game design.
+
+There is a new [website](https://zombie-rts.herokuapp.com/) up and running for feedback now! Play the game there and leave feedback!
 
 to run the game locally, do the following:
 
