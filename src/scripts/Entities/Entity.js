@@ -7,15 +7,16 @@ export default class Entity {
     this.position = { x, y };
     this.direction = { x: 0, y: 0 };
 
+    // visual stuff
+    this.sprite = game.add.sprite(x, y, spriteKey);
+    this.sprite.anchor.set(0.5);
+
     // constant acceleration
     this.speed = speed;
 
     game.physics.enable(this.sprite, Phaser.Physics.ARCADE);
     this.sprite.body.collideWorldBounds = true;
 
-    // visual stuff
-    this.sprite = game.add.sprite(x, y, spriteKey);
-    this.sprite.anchor.set(0.5);
 
     // not physics or visual related variables
     this.maxHealth = maxHealth;
@@ -49,5 +50,8 @@ export default class Entity {
   }
 
   postUpdate() {
+  }
+
+  render() {
   }
 }
