@@ -11,6 +11,7 @@ export default class Zombie extends Entity {
   }
 
   update() {
+    this.AttackAI.update(); // uses move AI
     this.MoveAI.update();
   }
 }

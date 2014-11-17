@@ -2,6 +2,9 @@ import Entity from 'Entities/Entity';
 import { UnitMovementAI } from 'AI/UnitAI';
 var Phaser = window.Phaser;
 
+const BODY_DRAG = 175;
+const SELECTED_RECT_SIZE = 14;
+
 export default class Unit extends Entity {
   constructor({ x, y, game, spriteKey, speed }) {
     super({ x, y, game, speed , spriteKey});
@@ -10,11 +13,11 @@ export default class Unit extends Entity {
     this.MoveAI = new UnitMovementAI({ unit: this });
 
     // graphics for selected units
-    this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, 14, 14);
+    this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, SELECTED_RECT_SIZE, SELECTED_RECT_SIZE);
     this.selectedGraphics = this.game.add.graphics(0, 0); // initialize here so we can destroy later
 
-    this.sprite.body.drag.x = 100;
-    this.sprite.body.drag.y = 100;
+    this.sprite.body.drag.x = BODY_DRAG;
+    this.sprite.body.drag.y = BODY_DRAG;
 
     this.rect = new Phaser.Rectangle(x - this.sprite.width / 2,
       y - this.sprite.height / 2, this.sprite.width, this.sprite.height);

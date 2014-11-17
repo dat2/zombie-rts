@@ -3,6 +3,7 @@ import Zombie from 'Zombies/Zombie';
 export class ZombieMovementAI {
   constructor({ zombie }) {
     this.zombie = zombie;
+    this.target = {};
   }
 
   update() {
@@ -11,6 +12,10 @@ export class ZombieMovementAI {
 
   moveTo(map, worldPos) {
 
+  }
+
+  setTarget({ x, y }){
+    this.target = { x, y };
   }
 }
 
@@ -37,7 +42,7 @@ export class ZombieAttackAI {
     // move to the target
     if(this.target) {
       let { x, y } = target.sprite;
-      // this.zombie.MoveAI.moveTo(map, target);
+      this.zombie.MoveAI.setTarget(target);
     }
   }
 

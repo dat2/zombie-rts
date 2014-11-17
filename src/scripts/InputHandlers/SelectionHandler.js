@@ -132,7 +132,7 @@ export default class SelectionHandler {
 
     // TODO move this later
     let squad = new Squad(this.selectedUnits.length, this.selectedUnits);
-    squad.MoveAI.moveTo(this.map, worldPos, this.shiftKey.isDown);
+    squad.MoveAI.findPathsTo(this.map, worldPos, this.shiftKey.isDown);
   }
 
   registerMouseUpCallback() {
