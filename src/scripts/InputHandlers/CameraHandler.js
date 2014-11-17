@@ -9,7 +9,8 @@ export default class CameraHandler {
     this.cursors = cursors;
 
     // create a camera unit
-    this.camera = this.entityManager.createCamera(cameraProperties);
+    this.entityManager.createCamera(cameraProperties);
+    this.camera = this.entityManager.getEntity('camera');
 
     this.createHorizontalMouseZone(edgePixels);
     this.createVerticalMouseZone(edgePixels);
