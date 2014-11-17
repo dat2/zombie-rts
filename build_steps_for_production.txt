@@ -1,0 +1,25 @@
+build steps
+====================
+
+copy js into js/vendor/
+- browser-polyfill (from 6to5)
+- pathfinding-browser
+- lodash custom
+- almond
+
+precompile js and concatenate into app-built.js, copy into js/
+
+concatenate css into app-built.css, copy into css/
+
+copy images into assets/images/
+copy maps into assets/
+
+ordering of scripts in index.html
+=================================
+browser-polyfill
+almond
+lodash-custom
+pathfinding-browser
+phaser
+
+app-built.js
