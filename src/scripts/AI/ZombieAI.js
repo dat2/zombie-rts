@@ -1,21 +1,10 @@
+import MovementAI from './MovementAI';
 import Zombie from 'Zombies/Zombie';
+import Unit from 'Units/Unit';
 
-export class ZombieMovementAI {
+export class ZombieMovementAI extends MovementAI {
   constructor({ zombie }) {
-    this.zombie = zombie;
-    this.target = {};
-  }
-
-  update() {
-
-  }
-
-  moveTo(map, worldPos) {
-
-  }
-
-  setTarget({ x, y }){
-    this.target = { x, y };
+    super({ entity: zombie });
   }
 }
 
