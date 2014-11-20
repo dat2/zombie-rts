@@ -5,12 +5,23 @@ import { _ } from 'lodash';
 
 export default class EntityManager {
   constructor() {
-    this._entities = {};
+    this._entities = {
+      units: {},
+      zombies: {},
+      camera: null
+    };
   }
 
   // getters / setter for EntityManager.entities
   get entities() {
-    let array = _.keys(this._entities).map( (key) => this._entities[key] );
+    let array = [];
+    array.push(this._entities.camera);
+
+    let mapper = (obj, key) => obj[key];
+    let objToArray = (obj) => _.keys(obj).map(mapper.bind(null, obj));
+
+    array.push(...objToArray(this._entities.units) );
+    array.push(...objToArray(this._entities.zombies) );
     return array;
   }
 
@@ -20,12 +31,12 @@ export default class EntityManager {
   }
 
   createUnit(unitProperties, unitId = this.generateUID('unit_')) {
-    this._entities[unitId] = new Unit(unitProperties);
+    this._entities.units[unitId] = new Unit(unitProperties);
     return unitId;
   }
 
   createZombie(zombieProperties, zombieId = this.generateUID('zombie_')) {
-    this._entities[zombieId] = new Zombie(zombieProperties);
+    this._entities.zombies[zombieId] = new Zombie(zombieProperties);
     return zombieId;
   }
 
@@ -33,6 +44,14 @@ export default class EntityManager {
     this._entities.camera = new Camera(cameraProperties);
     game.camera.follow(this._entities.camera.sprite);
     return 'camera';
+  }
+
+  getUnit(unitId) {
+    return this._entities.units[unitId];
+  }
+
+  getZombie(zombieId) {
+    return this._entities.zombies[zombieId];
   }
 
   getEntity(entityId) {
