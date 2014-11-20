@@ -8,20 +8,7 @@ var gulp = require('gulp'),
 var browserify = require('browserify'),
   watchify = require('watchify'),
   to5browserify = require('6to5-browserify'),
-  reload = require('browser-sync').reload,
-  lazypipe = require('lazypipe');
-
-gulp.task('browserify', function() {
-  watch = true;
-  dist = false;
-  bundle();
-});
-
-gulp.task('browserify:dist', function() {
-  watch = false;
-  dist = true;
-  bundle();
-});
+  reload = require('browser-sync').reload;
 
 function bundle() {
   var b = browserify({
@@ -60,9 +47,24 @@ function createBundle(b) {
 function createDistBundle(b) {
   b.transform(to5browserify)
     .bundle()
-    .pipe(exorcist(config.paths.dist + 'js/bundle.js.map'))
-    .pipe(source('bundle.js'))
+    .pipe(exorcist(config.paths.dist + 'js/bundle.min.js.map'))
+    .pipe(source('bundle.min.js'))
     .pipe(buffer())
-    .pipe(g.uglify())
+    .pipe(g.uglifyjs({
+      inSourceMap: config.paths.dist + 'js/bundle.min.js.map',
+      outSourceMap: './bundle.min.js.map'
+    }))
     .pipe(gulp.dest(config.paths.dist + 'js/'));
 }
+
+gulp.task('browserify', function() {
+  watch = true;
+  dist = false;
+  bundle();
+});
+
+gulp.task('browserify:dist', function() {
+  watch = false;
+  dist = true;
+  bundle();
+});
