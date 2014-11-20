@@ -37,6 +37,7 @@ function bundle() {
 function createBundle(b) {
   b.transform(to5browserify)
     .bundle()
+    .pipe(exorcist(config.paths.dev + 'bundle.js.map'))
     .pipe(source('bundle.js'))
     .pipe(gulp.dest(config.paths.dev))
     .pipe(reload({

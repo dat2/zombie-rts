@@ -1,7 +1,7 @@
 import Unit from '../Units/Unit';
 import Zombie from '../Zombies/Zombie';
 import Camera from '../Camera/Camera';
-var _ = require('lodash');
+import { _ } from 'lodash';
 
 export default class EntityManager {
   constructor() {
