@@ -1,5 +1,5 @@
 import Zombie from './Zombie';
-import { ZombieHerdMovementAI } from 'AI/ZombieHerdAI';
+import { ZombieHerdMovementAI } from '../AI/ZombieHerdAI';
 
 export default class ZombieHerd {
 

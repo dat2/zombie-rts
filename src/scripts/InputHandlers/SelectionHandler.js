@@ -1,10 +1,8 @@
-import Unit from 'Units/Unit';
-import Squad from 'Units/Squad';
-var Phaser = window.Phaser;
+import Unit from '../Units/Unit';
+import Squad from '../Units/Squad';
 
 export default class SelectionHandler {
-  constructor({game, entityManager, map}) {
-    this.game = game;
+  constructor({entityManager, map}) {
     this.entityManager = entityManager;
     this.map = map;
 
@@ -19,7 +17,7 @@ export default class SelectionHandler {
 
     // visuals
     this.selectionRect = new Phaser.Rectangle(0, 0, 0, 0);
-    this.selectionRectGraphics = this.game.add.graphics(0, 0);
+    this.selectionRectGraphics = game.add.graphics(0, 0);
   }
 
   handle() {
@@ -30,7 +28,7 @@ export default class SelectionHandler {
 
   registerMovementCallback() {
     // on move, update the selection rectangle
-    this.game.input.addMoveCallback((pointer) => {
+    game.input.addMoveCallback((pointer) => {
       if(!this.dragging) {
         return;
       }
@@ -92,7 +90,7 @@ export default class SelectionHandler {
     // it
     this.selectionRectGraphics.destroy();
 
-    this.selectionRectGraphics = this.game.add.graphics(this.selectionRect.x, this.selectionRect.y);
+    this.selectionRectGraphics = game.add.graphics(this.selectionRect.x, this.selectionRect.y);
     this.selectionRectGraphics.lineStyle(2, 0x00FF00, 1); // width, color, alpha [0,1] required settings
     this.selectionRectGraphics.beginFill(0x00FF00, 0.5); // color, alpha [0,1] required settings
     this.selectionRectGraphics.drawRect(0, 0, this.selectionRect.width, this.selectionRect.height);
@@ -100,11 +98,11 @@ export default class SelectionHandler {
 
   registerMouseDownCallback() {
     // start dragging on click
-    this.game.input.onDown.add( (pointer, mouse) => {
+    game.input.onDown.add( (pointer, mouse) => {
       // left click, start dragging selection box
-      if(this.game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
+      if(game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
         this.handleLeftMouseButtonDown(pointer, mouse);
-      } else if(this.game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
+      } else if(game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
         this.handleRightMouseButtonDown(pointer, mouse);
       }
     });
@@ -137,7 +135,7 @@ export default class SelectionHandler {
 
   registerMouseUpCallback() {
     // stop dragging, and set width and height to 0
-    this.game.input.onUp.add( () => {
+    game.input.onUp.add( () => {
       if(this.dragging) {
         this.dragging = false;
         this.selectionRect.width = 0;

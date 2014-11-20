@@ -1,0 +1,13 @@
+{
+  "paths": {
+    "dev": ".tmp/",
+    "dist": "../zombie-rts-dist/public/",
+    "images": "assets/images/",
+    "scripts": "src/scripts/",
+    "styles": "src/styles/"
+  },
+  "files": {
+    "index": "src/index.html",
+    "main": "src/scripts/main.js"
+  }
+}

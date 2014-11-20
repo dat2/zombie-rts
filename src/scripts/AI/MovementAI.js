@@ -17,7 +17,6 @@ export default class MovementAI {
 
   constructor({ entity, renderPath }) {
     this.entity = entity;
-    this.game = entity.game;
 
     this.state = STATE_IDLE;
     this.renderPath = renderPath;
@@ -84,7 +83,7 @@ export default class MovementAI {
 
   visualizePath(path) {
     path.forEach( (element) => {
-      element.shape = this.game.add.graphics(element.x, element.y);  //init rect
+      element.shape = game.add.graphics(element.x, element.y);  //init rect
       element.shape.lineStyle(2, 0x00FF00, 0.5); // width, color, alpha (0 -> 1) // required settings
       element.shape.beginFill(0x00FF00, 0.2); // color, alpha (0 -> 1) // required settings
       element.shape.drawRect(-5, -5, 10, 10); // (x, y, w, h)
@@ -151,12 +150,12 @@ export default class MovementAI {
   }
 
   isNotCloseToTarget() {
-    return this.game.physics.arcade.distanceToXY(this.entity.sprite, this.target.x, this.target.y) > DIST_TO_TARGET;
+    return game.physics.arcade.distanceToXY(this.entity.sprite, this.target.x, this.target.y) > DIST_TO_TARGET;
   }
 
   moveToTarget() {
     this.state = STATE_MOVING;
-    this.game.physics.arcade.moveToObject(this.entity.sprite, this.target, this.entity.speed);
+    game.physics.arcade.moveToObject(this.entity.sprite, this.target, this.entity.speed);
     this.entity.position.x = this.entity.sprite.x;
     this.entity.position.y = this.entity.sprite.y;
   }

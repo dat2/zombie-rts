@@ -1,9 +1,6 @@
-var Phaser = window.Phaser;
-
 const CAMERA_MOVEMENT_SPEED = 300;
 export default class CameraHandler {
-  constructor({game, entityManager, map, cursors, cameraProperties, edgePixels}) {
-    this.game = game;
+  constructor({entityManager, map, cursors, cameraProperties, edgePixels}) {
     this.entityManager = entityManager;
     this.map = map;
     this.cursors = cursors;
@@ -18,16 +15,16 @@ export default class CameraHandler {
 
   // the zone that triggers horizontal movement
   createHorizontalMouseZone(edgePixels) {
-    this.deadHorizontalRect = new Phaser.Rectangle(0, 0, this.game.width - (edgePixels * 2), this.game.height);
-    this.deadHorizontalRect.centerX = this.game.camera.view.centerX;
-    this.deadHorizontalRect.centerY = this.game.camera.view.centerY;
+    this.deadHorizontalRect = new Phaser.Rectangle(0, 0, game.width - (edgePixels * 2), game.height);
+    this.deadHorizontalRect.centerX = game.camera.view.centerX;
+    this.deadHorizontalRect.centerY = game.camera.view.centerY;
   }
 
   // the zone that triggers vertical movement
   createVerticalMouseZone(edgePixels) {
-    this.deadVerticalRect = new Phaser.Rectangle(0, 0, this.game.width, this.game.height - (edgePixels * 2));
-    this.deadVerticalRect.centerX = this.game.camera.view.centerX;
-    this.deadVerticalRect.centerY = this.game.camera.view.centerY;
+    this.deadVerticalRect = new Phaser.Rectangle(0, 0, game.width, game.height - (edgePixels * 2));
+    this.deadVerticalRect.centerX = game.camera.view.centerX;
+    this.deadVerticalRect.centerY = game.camera.view.centerY;
   }
 
   moveHorizontal(speed) {
@@ -79,7 +76,7 @@ export default class CameraHandler {
   }
 
   registerMouseMovementCallback() {
-    this.game.input.addMoveCallback( (pointer) => {
+    game.input.addMoveCallback( (pointer) => {
       this.registerHorizontalMovement(pointer);
       this.registerVerticalMovement(pointer);
     });
