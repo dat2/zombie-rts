@@ -1,14 +1,11 @@
-import Unit from 'Units/Unit';
-import GameState from 'Game/GameState';
-import GameMap from 'Game/GameMap';
-import EntityManager from 'Entities/EntityManager';
-import SelectionHandler from 'InputHandlers/SelectionHandler';
-import CameraHandler from 'InputHandlers/CameraHandler';
+import Unit from './Units/Unit';
+import GameMap from './Game/GameMap';
+import EntityManager from './Entities/EntityManager';
+import SelectionHandler from './InputHandlers/SelectionHandler';
+import CameraHandler from './InputHandlers/CameraHandler';
 
-export default function start() {
-  var Phaser = window.Phaser;
-
-  var game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
+function start() {
+  window.game = new Phaser.Game(800, 600, Phaser.AUTO, '', {
     preload,
     create,
     update,
@@ -16,7 +13,6 @@ export default function start() {
   });
 
   var entityManager;
-  var state;
   var map;
   var selectionHandler;
   var cameraHandler;
@@ -33,8 +29,6 @@ export default function start() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.canvas.oncontextmenu = (e) => e.preventDefault();
 
-    state = new GameState(game);
-    game.gameState = state;
     map = new GameMap({
       game,
       mapName: 'map',
@@ -101,3 +95,5 @@ export default function start() {
     entityManager.render();
   }
 }
+
+start();

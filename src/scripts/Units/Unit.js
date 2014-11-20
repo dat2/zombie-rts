@@ -1,20 +1,18 @@
-import Entity from 'Entities/Entity';
-import { UnitMovementAI } from 'AI/UnitAI';
-var Phaser = window.Phaser;
+import Entity from '../Entities/Entity';
+import { UnitMovementAI } from '../AI/UnitAI';
 
 const BODY_DRAG = 175;
 const SELECTED_RECT_SIZE = 14;
 
 export default class Unit extends Entity {
-  constructor({ x, y, game, spriteKey, speed, maxHealth }) {
-    super({ x, y, game, speed , spriteKey, maxHealth});
+  constructor({ x, y, spriteKey, speed, maxHealth }) {
+    super({ x, y, speed , spriteKey, maxHealth});
 
-    this.game = game;
     this.MoveAI = new UnitMovementAI({ unit: this });
 
     // graphics for selected units
     this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, SELECTED_RECT_SIZE, SELECTED_RECT_SIZE);
-    this.selectedGraphics = this.game.add.graphics(0, 0); // initialize here so we can destroy later
+    this.selectedGraphics = game.add.graphics(0, 0); // initialize here so we can destroy later
 
     this.sprite.body.drag.x = BODY_DRAG;
     this.sprite.body.drag.y = BODY_DRAG;
@@ -53,7 +51,7 @@ export default class Unit extends Entity {
     if(this.selected) {
       this.selectedGraphics.destroy();
 
-      this.selectedGraphics = this.game.add.graphics(this.selectedRect.x, this.selectedRect.y);
+      this.selectedGraphics = game.add.graphics(this.selectedRect.x, this.selectedRect.y);
       this.selectedGraphics.lineStyle(2, 0x0000FF, 1); // width, color (0x0000FF), alpha (0 -> 1) // required settings
       // this.selectedGraphics.beginFill(0x0000FF, 0.2); // color (0xFFFF0B), alpha (0 -> 1) // required settings
       this.selectedGraphics.drawRect(0, 0, this.selectedRect.width, this.selectedRect.height); // (x, y, w, h)

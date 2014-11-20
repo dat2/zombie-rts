@@ -1,12 +1,10 @@
-import Unit from 'Units/Unit';
-import Zombie from 'Zombies/Zombie';
-import Camera from 'Camera/Camera';
+import Unit from '../Units/Unit';
+import Zombie from '../Zombies/Zombie';
+import Camera from '../Camera/Camera';
 var _ = require('lodash');
 
 export default class EntityManager {
-  constructor({game}) {
-    this.game = game;
-
+  constructor() {
     this._entities = {};
   }
 
@@ -33,7 +31,7 @@ export default class EntityManager {
 
   createCamera(cameraProperties) {
     this._entities.camera = new Camera(cameraProperties);
-    this.game.camera.follow(this._entities.camera.sprite);
+    game.camera.follow(this._entities.camera.sprite);
     return 'camera';
   }
 
@@ -51,11 +49,11 @@ export default class EntityManager {
       entity.preUpdate();
 
       // collide with the map
-      this.game.physics.arcade.collide(entity.sprite, map.layer);
+      game.physics.arcade.collide(entity.sprite, map.layer);
 
       // collide with all other entities (look into a quad tree implementation?)
       this.entities.forEach( (entity2) => {
-        this.game.physics.arcade.collide(entity.sprite, entity2.sprite);
+        game.physics.arcade.collide(entity.sprite, entity2.sprite);
       });
 
       // update

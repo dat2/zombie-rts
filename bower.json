@@ -19,8 +19,7 @@
     "tests"
   ],
   "dependencies": {
-    "phaser": "~2.1.1",
-    "requirejs": "~2.1.15"
+    "phaser": "~2.1.1"
   },
   "overrides": {
     "almond": {

@@ -1,9 +1,8 @@
-import Entity from 'Entities/Entity';
-var Phaser = window.Phaser;
+import Entity from '../Entities/Entity';
 
 export default class Camera extends Entity {
-  constructor({x, y, game, spriteKey, speed}) {
-    super({x, y, game, spriteKey, speed});
+  constructor({x, y, spriteKey, speed}) {
+    super({x, y, spriteKey, speed});
 
     this.sprite.visible = false;
     this.sprite.body.immovable = true; // no other entity should move this
