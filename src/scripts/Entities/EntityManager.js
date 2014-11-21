@@ -3,6 +3,9 @@ import Zombie from '../Zombies/Zombie';
 import Camera from '../Camera/Camera';
 import { _ } from 'lodash';
 
+var getValueFromKey = (obj, key) => obj[key];
+var objectToArray = (obj) => _.keys(obj).map(getValueFromKey.bind(null, obj));
+
 export default class EntityManager {
   constructor() {
     this._entities = {
@@ -16,17 +19,29 @@ export default class EntityManager {
   get entities() {
     let array = [];
     array.push(this._entities.camera);
-
-    let mapper = (obj, key) => obj[key];
-    let objToArray = (obj) => _.keys(obj).map(mapper.bind(null, obj));
-
-    array.push(...objToArray(this._entities.units) );
-    array.push(...objToArray(this._entities.zombies) );
+    array.push(...this.units);
+    array.push(...this.zombies);
     return array;
   }
 
   // not allowed to set it
   set entities(value) {
+    return;
+  }
+
+  get units() {
+    return objectToArray(this._entities.units);
+  }
+
+  set units() {
+    return;
+  }
+
+  get zombies() {
+    return objectToArray(this._entities.zombies);
+  }
+
+  set zombies() {
     return;
   }
 
