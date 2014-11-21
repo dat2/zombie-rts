@@ -2,7 +2,7 @@
   "name": "zombie-rts",
   "version": "1.0.0",
   "description": "A zombie game",
-  "main": "index.js",
+  "main": "src/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -22,6 +22,7 @@
     "gulp-plumber": "^0.6.6",
     "gulp-uglifyjs": "^0.5.0",
     "main-bower-files": "^2.0.0",
+    "node-webkit-builder": "^0.3.0",
     "vinyl-buffer": "^1.0.0",
     "vinyl-source-stream": "^1.0.0",
     "watchify": "^2.1.1"
@@ -29,5 +30,10 @@
   "dependencies": {
     "lodash": "^2.4.1",
     "pathfinding": "^0.4.13"
+  },
+  "window": {
+    "toolbar": false,
+    "width": 800,
+    "height": 600
   }
 }
