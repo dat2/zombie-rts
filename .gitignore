@@ -2,3 +2,6 @@ node_modules/
 bower_components/
 *sublime*
 .tmp/
+
+build/
+cache/

@@ -1,4 +1,4 @@
-var PF = require('pathfinding');
+import { Grid, AStarFinder } from 'pathfinding';
 
 export default class GameMap {
   constructor({ mapName, dimensions, tileDimensions,
@@ -11,9 +11,9 @@ export default class GameMap {
     this.tileDimensions = tileDimensions;
 
     // set grid stuff
-    this.grid = new PF.Grid(this.dimensions.width, this.dimensions.height,
+    this.grid = new Grid(this.dimensions.width, this.dimensions.height,
         this.createGrid(walkableTiles));
-    this.finder = new PF.AStarFinder({
+    this.finder = new AStarFinder({
       allowDiagonal: true,
       dontCrossCorners: true
     });
