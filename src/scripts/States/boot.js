@@ -1,4 +1,4 @@
-export default class Boot {
+export default class BootState {
   constructor() {
 
   }

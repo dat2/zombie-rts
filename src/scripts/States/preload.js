@@ -1,4 +1,4 @@
-export default class Preload {
+export default class PreloadState {
   constructor() {
     this.asset = null;
     this.ready = false;

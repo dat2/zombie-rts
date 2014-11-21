@@ -4,7 +4,8 @@ import EntityManager from '../Entities/EntityManager';
 import SelectionHandler from '../InputHandlers/SelectionHandler';
 import CameraHandler from '../InputHandlers/CameraHandler';
 
-export default class Play {
+const EDGE_PIXELS = 50;
+export default class PlayState {
   constructor() {
   }
 
@@ -15,10 +16,12 @@ export default class Play {
     game.load.image('zombie', 'assets/images/zombie.png');
   }
 
-  create() {
+  setupPhaser() {
     game.physics.startSystem(Phaser.Physics.ARCADE);
     game.canvas.oncontextmenu = (e) => e.preventDefault();
+  }
 
+  createMap() {
     this.map = new GameMap({
       mapName: 'map',
       dimensions: { width: 160, height: 120 },
@@ -34,36 +37,39 @@ export default class Play {
       tilesetImageKey: 'tileset',
       layer: 'main'
     });
+  }
 
-    let debugKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
-    debugKey.onDown.add(() => { debugger; });
-
+  createEntityManager() {
     this.entityManager = new EntityManager({ game });
     game.entityManager = this.entityManager;
+  }
 
+  createSelectionHandler() {
     this.selectionHandler = new SelectionHandler({
       game,
       entityManager: this.entityManager,
       map: this.map
     });
     this.selectionHandler.handle();
+  }
 
-    // add camera
-    {
-      let { x, y } = this.map.tileCoordsToWorldCoords({ x: 34, y: 30 });
-      let cameraProperties = { x, y, spriteKey: 'character', speed: 100 };
+  createCameraHandler() {
+  // add camera
+    let { x, y } = this.map.tileCoordsToWorldCoords({ x: 34, y: 30 });
+    let cameraProperties = { x, y, spriteKey: 'character', speed: 100 };
 
-      let cursors = game.input.keyboard.createCursorKeys();
-      this.cameraHandler = new CameraHandler({
-        entityManager: this.entityManager,
-        map: this.map,
-        cursors,
-        cameraProperties,
-        edgePixels: 50
-      });
-      this.cameraHandler.handle();
-    }
+    let cursors = game.input.keyboard.createCursorKeys();
+    this.cameraHandler = new CameraHandler({
+      entityManager: this.entityManager,
+      map: this.map,
+      cursors,
+      cameraProperties,
+      edgePixels: EDGE_PIXELS
+    });
+    this.cameraHandler.handle();
+  }
 
+  addTestEntities() {
     // add random entities
     for(let xi = 30; xi <= 33; xi++)
     {
@@ -87,6 +93,23 @@ export default class Play {
     this.entityManager.createZombie({ x, y, spriteKey: 'zombie', speed: 20, maxHealth: 50});
   }
 
+  setupDebugKeys() {
+    let debugKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+    debugKey.onDown.add(() => { debugger; });
+  }
+
+  create() {
+    this.setupPhaser();
+    this.setupDebugKeys();
+
+    this.createMap();
+    this.createEntityManager();
+    this.createSelectionHandler();
+    this.createCameraHandler();
+
+    this.addTestEntities();
+  }
+
   update() {
     this.entityManager.update(this.map);
   }
@@ -94,9 +117,8 @@ export default class Play {
   render() {
     game.debug.inputInfo(32, 32);
 
-    // game.debug.geom(selectionHandler.selectionRect, '#0fffff');
-    // game.debug.geom(cameraHandler.deadHorizontalRect, '#00ff00');
-    // game.debug.geom(cameraHandler.deadVerticalRect, '#0000ff');
+    // game.debug.geom(this.cameraHandler.deadHorizontalRect, '#00ff00');
+    // game.debug.geom(this.cameraHandler.deadVerticalRect, '#0000ff');
     this.entityManager.render();
   }
 }
