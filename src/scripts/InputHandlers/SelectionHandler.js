@@ -1,5 +1,5 @@
-import Unit from '../Units/Unit';
-import Squad from '../Units/Squad';
+import Unit from 'Units/Unit';
+import Squad from 'Units/Squad';
 
 export default class SelectionHandler {
   constructor({entityManager, map}) {

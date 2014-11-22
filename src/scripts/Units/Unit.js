@@ -1,5 +1,5 @@
-import Entity from '../Entities/Entity';
-import { UnitMovementAI } from '../AI/UnitAI';
+import Entity from 'Entities/Entity';
+import { UnitMovementAI } from 'AI/UnitAI';
 
 const BODY_DRAG = 175;
 const SELECTED_RECT_SIZE = 14;

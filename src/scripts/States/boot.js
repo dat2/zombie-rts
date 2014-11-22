@@ -8,7 +8,7 @@ export default class BootState {
   }
 
   create() {
-    game.state.start('play');
+    window.game.state.start('play');
   }
 
   update() {

@@ -9,9 +9,7 @@ const DIST_TO_TARGET = 10;
 // Returns a random number between min (inclusive) and max (exclusive)
 // taken from MDN
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
-}
+var getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
 export default class MovementAI {
 

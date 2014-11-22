@@ -1,7 +1,7 @@
-import Unit from '../Units/Unit';
-import Zombie from '../Zombies/Zombie';
-import Camera from '../Camera/Camera';
-import { _ } from 'lodash';
+import Unit from 'Units/Unit';
+import Zombie from 'Zombies/Zombie';
+import Camera from 'Camera/Camera';
+var _ = require('lodash');
 
 var getValueFromKey = (obj, key) => obj[key];
 var objectToArray = (obj) => _.keys(obj).map(getValueFromKey.bind(null, obj));

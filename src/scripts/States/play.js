@@ -1,24 +1,26 @@
-import Unit from '../Units/Unit';
-import GameMap from '../Game/GameMap';
-import EntityManager from '../Entities/EntityManager';
-import SelectionHandler from '../InputHandlers/SelectionHandler';
-import CameraHandler from '../InputHandlers/CameraHandler';
+import Unit from 'Units/Unit';
+import GameMap from 'Game/GameMap';
+import EntityManager from 'Entities/EntityManager';
+import SelectionHandler from 'InputHandlers/SelectionHandler';
+import CameraHandler from 'InputHandlers/CameraHandler';
 
 const EDGE_PIXELS = 50;
 export default class PlayState {
   constructor() {
+    this.game = window.game;
   }
 
   preload() {
-    game.load.tilemap('map', 'assets/maps/map2.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.image('character', 'assets/images/character.png');
-    game.load.image('tileset', 'assets/images/tile_sheet.png');
-    game.load.image('zombie', 'assets/images/zombie.png');
+    // NOTE: this is highly dependent on the location of the index.html right now...
+    this.game.load.tilemap('map', '../assets/maps/map2.json', null, Phaser.Tilemap.TILED_JSON);
+    this.game.load.image('character', '../assets/images/character.png');
+    this.game.load.image('tileset', '../assets/images/tile_sheet.png');
+    this.game.load.image('zombie', '../assets/images/zombie.png');
   }
 
   setupPhaser() {
-    game.physics.startSystem(Phaser.Physics.ARCADE);
-    game.canvas.oncontextmenu = (e) => e.preventDefault();
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    this.game.canvas.oncontextmenu = (e) => e.preventDefault();
   }
 
   createMap() {
@@ -29,7 +31,7 @@ export default class PlayState {
       walkableTiles: [3,5,6,8],
       collisionTiles: [1]
     });
-    game.map = this.map;
+    this.game.map = this.map;
 
     // render the map
     this.map.render({
@@ -40,13 +42,13 @@ export default class PlayState {
   }
 
   createEntityManager() {
-    this.entityManager = new EntityManager({ game });
-    game.entityManager = this.entityManager;
+    this.entityManager = new EntityManager({ game: this.game });
+    this.game.entityManager = this.entityManager;
   }
 
   createSelectionHandler() {
     this.selectionHandler = new SelectionHandler({
-      game,
+      game: this.game,
       entityManager: this.entityManager,
       map: this.map
     });
@@ -54,11 +56,11 @@ export default class PlayState {
   }
 
   createCameraHandler() {
-  // add camera
+    // add camera
     let { x, y } = this.map.tileCoordsToWorldCoords({ x: 34, y: 30 });
     let cameraProperties = { x, y, spriteKey: 'character', speed: 100 };
 
-    let cursors = game.input.keyboard.createCursorKeys();
+    let cursors = this.game.input.keyboard.createCursorKeys();
     this.cameraHandler = new CameraHandler({
       entityManager: this.entityManager,
       map: this.map,
@@ -94,7 +96,7 @@ export default class PlayState {
   }
 
   setupDebugKeys() {
-    let debugKey = game.input.keyboard.addKey(Phaser.Keyboard.P);
+    let debugKey = this.game.input.keyboard.addKey(Phaser.Keyboard.P);
     debugKey.onDown.add(() => { debugger; });
   }
 
@@ -115,10 +117,10 @@ export default class PlayState {
   }
 
   render() {
-    game.debug.inputInfo(32, 32);
+    this.game.debug.inputInfo(32, 32);
 
-    // game.debug.geom(this.cameraHandler.deadHorizontalRect, '#00ff00');
-    // game.debug.geom(this.cameraHandler.deadVerticalRect, '#0000ff');
+    // this.game.debug.geom(this.cameraHandler.deadHorizontalRect, '#00ff00');
+    // this.game.debug.geom(this.cameraHandler.deadVerticalRect, '#0000ff');
     this.entityManager.render();
   }
 }
