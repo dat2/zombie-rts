@@ -1,6 +1,15 @@
+var gulp = require('./gulp')([
+  'scripts',
+  'clean',
+  'inject',
+  'watch',
+  'imagemin'
+]);
+// prepare the app in ".dist" folder?
+
 var NwBuilder = require('node-webkit-builder');
 var nw = new NwBuilder({
-    files: './**/**', // use the glob format
+    files: './**/**', // change this of course
     platforms: ['win','osx']
 });
 
