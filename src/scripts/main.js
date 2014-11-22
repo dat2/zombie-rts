@@ -5,13 +5,10 @@ import MenuState from 'States/menu';
 import PlayState from 'States/play';
 import GameOverState from 'States/gameover';
 
-const GAME_WIDTH = 800;
-const GAME_HEIGHT = 600;
-const GAME_NAME = 'zombie rts';
-
+const { name, window: { width, height } } = require('../package');
 
 export function start() {
-  window.game = new Phaser.Game(GAME_WIDTH, GAME_HEIGHT, GAME_NAME);
+  window.game = new Phaser.Game(width, height, name);
   // Game States
   game.state.add('boot', new BootState());
   game.state.add('preload', new PreloadState());
