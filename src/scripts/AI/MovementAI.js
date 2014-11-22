@@ -124,6 +124,7 @@ export default class MovementAI {
         this.iterateOverPath();
       }
     }
+    this.updatePosition();
   }
 
   checkCollision() {
@@ -156,7 +157,10 @@ export default class MovementAI {
   moveToTarget() {
     this.state = STATE_MOVING;
     game.physics.arcade.moveToObject(this.entity.sprite, this.target, this.entity.speed);
-    this.entity.position.x = this.entity.sprite.x;
-    this.entity.position.y = this.entity.sprite.y;
+  }
+
+  updatePosition() {
+    let { x, y } = this.entity.sprite;
+    this.entity.position = { x, y };
   }
 }

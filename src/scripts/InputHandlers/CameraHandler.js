@@ -8,6 +8,7 @@ export default class CameraHandler {
     // create a camera unit
     this.entityManager.createCamera(cameraProperties);
     this.camera = this.entityManager.getEntity('camera');
+    game.camera.follow(this.camera.sprite);
 
     this.createHorizontalMouseZone(edgePixels);
     this.createVerticalMouseZone(edgePixels);
