@@ -18,7 +18,6 @@ export default class EntityManager {
   // getters / setter for EntityManager.entities
   get entities() {
     let array = [];
-    array.push(this._entities.camera);
     array.push(...this.units);
     array.push(...this.zombies);
     return array;
