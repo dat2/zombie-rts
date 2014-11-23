@@ -1,6 +1,6 @@
-import MovementAI from './MovementAI';
-import Zombie from '../Zombies/Zombie';
-import Unit from '../Units/Unit';
+import MovementAI from 'AI/MovementAI';
+import Zombie from 'Zombies/Zombie';
+import Unit from 'Units/Unit';
 
 export class ZombieMovementAI extends MovementAI {
   constructor({ zombie }) {

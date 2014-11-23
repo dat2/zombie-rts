@@ -1,7 +1,7 @@
-import Unit from '../Units/Unit';
-import Zombie from '../Zombies/Zombie';
-import Camera from '../Camera/Camera';
-import { _ } from 'lodash';
+import Unit from 'Units/Unit';
+import Zombie from 'Zombies/Zombie';
+import Camera from 'Camera/Camera';
+var _ = require('lodash');
 
 var getValueFromKey = (obj, key) => obj[key];
 var objectToArray = (obj) => _.keys(obj).map(getValueFromKey.bind(null, obj));
@@ -18,7 +18,6 @@ export default class EntityManager {
   // getters / setter for EntityManager.entities
   get entities() {
     let array = [];
-    array.push(this._entities.camera);
     array.push(...this.units);
     array.push(...this.zombies);
     return array;

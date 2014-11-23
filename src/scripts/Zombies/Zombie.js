@@ -1,5 +1,5 @@
-import Entity from '../Entities/Entity';
-import { ZombieMovementAI, ZombieAttackAI } from '../AI/ZombieAI';
+import Entity from 'Entities/Entity';
+import { ZombieMovementAI, ZombieAttackAI } from 'AI/ZombieAI';
 
 const BODY_DRAG = 30;
 export default class Zombie extends Entity {

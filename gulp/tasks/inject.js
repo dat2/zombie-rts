@@ -2,32 +2,41 @@ var gulp = require('gulp'),
   g = require('gulp-load-plugins')();
 
 var config = require('../config'),
-  mainBowerFiles = require('main-bower-files'),
-  reload = require('browser-sync').reload;
+  mainBowerFiles = require('main-bower-files');
 
-gulp.task('inject', function() {
+gulp.task('inject', ['scripts'], function() {
   return gulp.src(config.files.index)
     .pipe(g.inject(
-      gulp.src([config.paths.dev + '*', config.paths.styles + '*'], {
+      gulp.src(config.paths.dev + '{*/,}*.js', {
         read: false
       }), {
         name: 'app',
-        ignorePath: config.paths.dev
+        ignorePath: config.paths.dev,
+        addPrefix: '.',
+        addRootSlash: false
       }
     ))
     .pipe(g.inject(
+      gulp.src(config.paths.styles + '*.css', {
+        read: false
+      }), {
+        name: 'app',
+        ignorePath: config.paths.dev,
+        addPrefix: '..',
+        addRootSlash: false
+      }))
+    .pipe(g.inject(
       gulp.src(
-        ['node_modules/6to5-browserify/node_modules/6to5/browser-polyfill.js']
+        ['node_modules/6to5/browser-polyfill.js']
           .concat(mainBowerFiles())
       ),
         {
         name: 'vendor',
+        addPrefix: '..',
+        addRootSlash: false
         }
     ))
-    .pipe(gulp.dest(config.paths.dev))
-    .pipe(reload({
-      stream: true
-    }));
+    .pipe(gulp.dest(config.paths.dev));
 });
 
 // TODO

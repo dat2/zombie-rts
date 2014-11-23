@@ -3,5 +3,6 @@ bower_components/
 *sublime*
 .tmp/
 
+# node-webkit builder
 build/
 cache/

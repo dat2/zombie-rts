@@ -1,4 +1,4 @@
-import ZombieHerd from '../Zombies/ZombieHerd';
+import ZombieHerd from 'Zombies/ZombieHerd';
 
 export class ZombieHerdMovementAI {
 

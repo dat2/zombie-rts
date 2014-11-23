@@ -9,9 +9,7 @@ const DIST_TO_TARGET = 10;
 // Returns a random number between min (inclusive) and max (exclusive)
 // taken from MDN
 // https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-function getRandomArbitrary(min, max) {
-  return Math.random() * (max - min) + min;
-}
+var getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
 export default class MovementAI {
 
@@ -124,6 +122,7 @@ export default class MovementAI {
         this.iterateOverPath();
       }
     }
+    this.updatePosition();
   }
 
   checkCollision() {
@@ -156,7 +155,10 @@ export default class MovementAI {
   moveToTarget() {
     this.state = STATE_MOVING;
     game.physics.arcade.moveToObject(this.entity.sprite, this.target, this.entity.speed);
-    this.entity.position.x = this.entity.sprite.x;
-    this.entity.position.y = this.entity.sprite.y;
+  }
+
+  updatePosition() {
+    let { x, y } = this.entity.sprite;
+    this.entity.position = { x, y };
   }
 }

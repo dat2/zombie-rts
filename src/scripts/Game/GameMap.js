@@ -1,4 +1,4 @@
-import { Grid, AStarFinder } from 'pathfinding';
+var { Grid, AStarFinder } = require('pathfinding');
 
 export default class GameMap {
   constructor({ mapName, dimensions, tileDimensions,

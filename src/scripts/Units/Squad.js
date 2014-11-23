@@ -1,5 +1,5 @@
-import Unit from './Unit';
-import { SquadMovementAI } from '../AI/SquadAI';
+import Unit from 'Units/Unit';
+import { SquadMovementAI } from 'AI/SquadAI';
 
 const MAX_UNITS = 10;
 export default class Squad {
