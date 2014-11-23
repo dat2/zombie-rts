@@ -4,6 +4,7 @@ var gulp = require('gulp'),
 
 require('./gulp')(['scripts', 'inject', 'clean']);
 
+// inject the livereload script before starting node-webkit
 gulp.task('inject:livereload', function() {
   return gulp.src(config.files.index)
     .pipe(g.inject(gulp.src(['./nodewebkit-gulp-livereload.js']), {
@@ -15,6 +16,7 @@ gulp.task('inject:livereload', function() {
     .pipe(gulp.dest('src'));
 });
 
+// this will inject all dependencies into .tmp/index.html before starting node-webkit.
 gulp.task('default', ['inject:livereload', 'inject'], function(done) {
   require('child_process').exec('nodewebkit').unref();
 });
