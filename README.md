@@ -1,17 +1,20 @@
 zombie-rts
 ==========
 
-A JavaScript Next zombie RTS game. Trello board is
-[here](https://trello.com/b/l5yqHRK9/zombie-rts) but this is not public.
-I shall eventually create a publicly readable google docs with the game design.
+A JavaScript Next game. Trello board is [here](https://trello.com/b/l5yqHRK9/zombie-rts) but this is not public.
+I shall eventually create a publicly readable google doc with the game design.
 
-There is a new [website](https://zombie-rts.herokuapp.com/) up and running for feedback now! Play the game there and leave feedback!
+### Website!
+There is a new [website](https://zombie-rts.herokuapp.com/) up and running for feedback now! Play the game there and leave feedback here!
 
-to run the game locally, do the following:
+NOTE: I am currently experimenting with node-webkit, so the web app may become very outdated over time.
 
-1. install nodejs
-2. run `npm install -g bower gulp`
-3. clone this repo
-4. `npm install && bower install` in the root directory of this repo
-5. `gulp serve` then visit `http://localhost:3000` in your browser. Currently using browser-sync because its the only one that seemed to work with livereload :/
-6. code :D
+### Setup
+
+You must have nodejs, bower, and gulp installed for this. Clone the repository, then run `npm install && bower install` (to install dependencies) in the root directory.
+
+NOTE: Currently the game is running on node-webkit, so you also must install node-webkit for this. You can install node-webkit by running `npm -g install nodewebkit`.
+
+### Running the game
+
+`gulp` will start a nodewebkit instance that updates itself (via gulp) when you change the code.
