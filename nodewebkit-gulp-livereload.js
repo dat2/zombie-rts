@@ -1,3 +1,7 @@
+/**
+ * This code automatically gets injected into .tmp/index.html before starting node-webkit.
+ * When a file changes, node-webkit will reload itself with the new changes.
+ */
 var gulp = require('gulp'),
 g = require('gulp-load-plugins')();
 
