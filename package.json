@@ -1,7 +1,9 @@
 {
   "name": "zombie-rts",
-  "version": "1.0.0",
-  "description": "A zombie game",
+  "version": "0.2.0",
+  "description": "A JavaScript next RTS game with zombies in it.",
+  "readme": "REAMDE.md",
+  "repository": "https://github.com/dat2/zombie-rts.git",
   "main": ".tmp/index.html",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
