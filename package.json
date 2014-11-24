@@ -31,5 +31,7 @@
     "toolbar": true,
     "width": 800,
     "height": 600
-  }
+  },
+  "js-flags": "--harmony_generators --harmony_collections --harmony_proxies --harmony_modules --harmony_scoping --harmony_observation --harmony_symbols --harmony_iteration",
+  "inject-js-start": "./nodewebkit-gulp-livereload.js"
 }
