@@ -1,10 +1,35 @@
+import StateMachine from 'AI/StateMachine';
+
 const STATE_MOVING = 1;
 const STATE_IDLE = 2;
 const STATE_COLLIDING = 3;
 
+class MovementAIStateMachine extends StateMachine {
+  constructor() {
+    super(STATE_IDLE, [STATE_MOVING, STATE_IDLE, STATE_COLLIDING]);
+
+    // MOVING -> IDLE States
+    this.addTransition(STATE_MOVING, STATE_IDLE, (ai) => ai.isCloseToTarget());
+    this.addTransition(STATE_MOVING, STATE_IDLE, (ai) => ai.target === undefined);
+
+    // IDLE -> MOVING states
+    this.addTransition(STATE_IDLE, STATE_MOVING, (ai) => ai.target !== undefined);
+
+    // MOVING -> COLLIDING states
+    this.addTransition(STATE_MOVING, STATE_COLLIDING, (ai) => ai.isCollidingALot() );
+
+    // COLLIDING -> MOVING states
+    this.addTransition(STATE_COLLIDING, STATE_MOVING, (ai) => ai.isCollisionResolved() );
+  }
+
+  isMoving() {
+    return this.currentState === STATE_MOVING || this.currentState === STATE_COLLIDING;
+  }
+}
+
 const MAX_COLLISIONS = 50;
 const RANGE = 10;
-const DIST_TO_TARGET = 10;
+const MAX_DIST_TO_TARGET = 10;
 
 // Returns a random number between min (inclusive) and max (exclusive)
 // taken from MDN
@@ -13,20 +38,19 @@ var getRandomArbitrary = (min, max) => Math.random() * (max - min) + min;
 
 export default class MovementAI {
 
-  constructor({ entity, renderPath }) {
+  constructor({ entity, renderPath, renderColour }) {
     this.entity = entity;
+    this.stateMachine = new MovementAIStateMachine();
 
-    this.state = STATE_IDLE;
     this.renderPath = renderPath;
+    this.renderColour = renderColour;
 
     this.pathQueue = [];
-    this.target = {};
+    this.target = undefined;
     this.collisionCounter = 0;
   }
 
-  findPathTo(map, worldPos, appendToQueue = false) {
-    this.state = STATE_MOVING;
-
+  calculateStartPos(appendToQueue = false) {
     // calculate the start position
     let { x, y } = this.entity.sprite;
     let startPos = { x, y };
@@ -39,8 +63,7 @@ export default class MovementAI {
       this.clearQueue();
     }
 
-    this.findPath(map, startPos, worldPos);
-    this.state = STATE_MOVING;
+    return startPos;
   }
 
   clearQueue() {
@@ -52,7 +75,9 @@ export default class MovementAI {
     }
   }
 
-  findPath(map, startPos, worldPos) {
+  findPath(map, worldPos, appendToQueue = false) {
+    let startPos = this.calculateStartPos(appendToQueue);
+
     map.findPath(startPos, worldPos, (path) => {
       // if no path was found, return
       if(path === null) {
@@ -82,8 +107,8 @@ export default class MovementAI {
   visualizePath(path) {
     path.forEach( (element) => {
       element.shape = game.add.graphics(element.x, element.y);  //init rect
-      element.shape.lineStyle(2, 0x00FF00, 0.5); // width, color, alpha (0 -> 1) // required settings
-      element.shape.beginFill(0x00FF00, 0.2); // color, alpha (0 -> 1) // required settings
+      element.shape.lineStyle(2, this.renderColour, 0.5); // width, color, alpha (0 -> 1) // required settings
+      element.shape.beginFill(this.renderColour, 0.2); // color, alpha (0 -> 1) // required settings
       element.shape.drawRect(-5, -5, 10, 10); // (x, y, w, h)
     });
   }
@@ -94,38 +119,36 @@ export default class MovementAI {
   }
 
   iterateOverPath() {
-    var point = this.pathQueue.shift();
-    if(point === undefined) {
-      this.state = STATE_IDLE;
-      return;
-    } else {
-      this.state = STATE_MOVING;
-    }
-    this.target = point;
+    this.target = this.pathQueue.shift();
   }
 
   update () {
+    this.stateMachine.transition(this);
+
     //while the sprite is not at the world position, keep moving
-    if(this.state == STATE_MOVING || this.state == STATE_COLLIDING) {
+    if(this.stateMachine.isMoving()) {
       this.checkCollision();
-
-      // move the actual entity
-      if(this.isNotCloseToTarget()) {
-        this.moveToTarget();
-      } else {
-        //else stop moving
-        this.state = STATE_IDLE;
-
-        if(this.target.shape !== undefined) {
-          this.target.shape.destroy();
-        }
-        this.iterateOverPath();
+      this.moveToTarget();
+    } else {
+      if(this.target !== undefined && this.target.shape !== undefined) {
+        this.target.shape.destroy();
       }
+      this.iterateOverPath();
     }
+
     this.updatePosition();
   }
 
-  checkCollision() {
+  moveToTarget() {
+    game.physics.arcade.moveToObject(this.entity.sprite, this.target, this.entity.speed);
+  }
+
+  updatePosition() {
+    let { x, y } = this.entity.sprite;
+    this.entity.position = { x, y };
+  }
+
+  updateCollisionCounter() {
     // if the entity is colliding
     let touching = this.entity.sprite.body.touching;
 
@@ -136,10 +159,12 @@ export default class MovementAI {
     if(colliding) {
       this.collisionCounter++;
     }
+  }
 
-    if(this.collisionCounter > MAX_COLLISIONS) {
-      this.state = STATE_COLLIDING;
+  checkCollision() {
+    this.updateCollisionCounter();
 
+    if(this.isCollidingALot()) {
       //randomly move in a direction
       //generally gets it right
       this.target.x += getRandomArbitrary(-RANGE, RANGE);
@@ -148,17 +173,15 @@ export default class MovementAI {
     }
   }
 
-  isNotCloseToTarget() {
-    return game.physics.arcade.distanceToXY(this.entity.sprite, this.target.x, this.target.y) > DIST_TO_TARGET;
+  isCollidingALot() {
+    return this.collisionCounter > MAX_COLLISIONS;
   }
 
-  moveToTarget() {
-    this.state = STATE_MOVING;
-    game.physics.arcade.moveToObject(this.entity.sprite, this.target, this.entity.speed);
+  isCollisionResolved() {
+    return false;
   }
 
-  updatePosition() {
-    let { x, y } = this.entity.sprite;
-    this.entity.position = { x, y };
+  isCloseToTarget() {
+    return game.physics.arcade.distanceToXY(this.entity.sprite, this.target.x, this.target.y) <= MAX_DIST_TO_TARGET;
   }
 }
