@@ -1,6 +1,13 @@
 zombie-rts
 ==========
 
+<a href="https://codeclimate.com/github/dat2/zombie-rts">
+  <img alt="Code Climate Score" src="http://img.shields.io/codeclimate/github/dat2/zombie-rts.svg?style=flat">
+</a>
+<a href="https://david-dm.org/dat2/zombie-rts">
+  <img alt="Dependency Status" src="http://img.shields.io/david/dat2/zombie-rts.svg?style=flat">
+</a>
+
 A JavaScript Next game. Trello board is [here](https://trello.com/b/l5yqHRK9/zombie-rts) but this is not public.
 I shall eventually create a publicly readable google doc with the game design.
 
