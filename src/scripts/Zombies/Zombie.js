@@ -6,15 +6,14 @@ export default class Zombie extends Entity {
   constructor({ x, y, spriteKey, speed, maxHealth }) {
     super({ x, y, spriteKey, speed, maxHealth });
 
-    this.AttackAI = new ZombieAttackAI({ zombie: this });
-    this.MoveAI = new ZombieMovementAI({ zombie: this });
-
     this.sprite.body.drag.x = BODY_DRAG;
     this.sprite.body.drag.y = BODY_DRAG;
+
+    this.addAI(new ZombieAttackAI({ zombie: this }));
+    this.addAI(new ZombieMovementAI({ zombie: this }));
   }
 
   update() {
-    this.AttackAI.update(); // uses move AI
-    this.MoveAI.update();
+    super();
   }
 }

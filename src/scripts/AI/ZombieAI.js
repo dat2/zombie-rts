@@ -4,10 +4,12 @@ import Unit from 'Units/Unit';
 
 export class ZombieMovementAI extends MovementAI {
   constructor({ zombie }) {
-    super({ entity: zombie });
+    super({ entity: zombie, renderPath: true, renderColour: 0xFF0000 });
   }
 }
 
+const ATTACK_AI_POSITION = 0;
+const MOVEMENT_AI_POSITION = 1;
 // TODO figure out how to store map?
 export class ZombieAttackAI {
   constructor({ zombie }) {
@@ -50,7 +52,7 @@ export class ZombieAttackAI {
   moveTowardsTarget() {
     // move to the target
     if(this.target !== undefined) {
-      this.zombie.MoveAI.findPathTo(game.map, this.target.position, false);
+      this.zombie.AIList[MOVEMENT_AI_POSITION].findPath(game.map, this.target.position, false);
     }
   }
 

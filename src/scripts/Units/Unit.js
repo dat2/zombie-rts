@@ -8,8 +8,6 @@ export default class Unit extends Entity {
   constructor({ x, y, spriteKey, speed, maxHealth }) {
     super({ x, y, speed , spriteKey, maxHealth});
 
-    this.MoveAI = new UnitMovementAI({ unit: this });
-
     // graphics for selected units
     this.selectedRect = new Phaser.Rectangle(this.sprite.x, this.sprite.y, SELECTED_RECT_SIZE, SELECTED_RECT_SIZE);
     this.selectedGraphics = game.add.graphics(0, 0); // initialize here so we can destroy later
@@ -19,6 +17,8 @@ export default class Unit extends Entity {
 
     this.rect = new Phaser.Rectangle(x - this.sprite.width / 2,
       y - this.sprite.height / 2, this.sprite.width, this.sprite.height);
+
+    this.addAI(new UnitMovementAI({ unit: this }));
   }
 
   // select and render the selected rectangle
@@ -35,7 +35,6 @@ export default class Unit extends Entity {
 
   update() {
     super();
-    this.MoveAI.update();
   }
 
   postUpdate() {

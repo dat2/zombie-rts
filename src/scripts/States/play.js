@@ -89,10 +89,10 @@ export default class PlayState {
     }
 
     let { x, y } = this.map.tileCoordsToWorldCoords({ x:32, y:20 });
-    this.entityManager.createZombie({ x, y, spriteKey: 'zombie', speed: 20, maxHealth: 50});
+    this.entityManager.createZombie({ x, y, spriteKey: 'zombie', speed: 20, maxHealth: 50 });
 
     let { x, y } = this.map.tileCoordsToWorldCoords({ x:32, y:50 });
-    this.entityManager.createZombie({ x, y, spriteKey: 'zombie', speed: 20, maxHealth: 50});
+    this.entityManager.createZombie({ x, y, spriteKey: 'zombie', speed: 20, maxHealth: 50 });
   }
 
   setupDebugKeys() {

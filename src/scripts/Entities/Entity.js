@@ -20,6 +20,8 @@ export default class Entity {
     this.maxHealth = maxHealth;
     this.health = this.maxHealth;
     this.dead = false;
+
+    this.AIList = [];
   }
 
   setDirection({ x, y }) {
@@ -41,10 +43,18 @@ export default class Entity {
     }
   }
 
+  // TODO decide update lifecycle for AI
+  addAI(AI) {
+    this.AIList.push(AI);
+  }
+
   preUpdate() {
   }
 
   update() {
+    this.AIList.forEach(function(AI) {
+      AI.update();
+    });
   }
 
   postUpdate() {

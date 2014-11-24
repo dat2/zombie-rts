@@ -1,5 +1,6 @@
 import Unit from 'Units/Unit';
 
+const UNIT_MOVEMENT_AI_POSITION = 0;
 export class SquadMovementAI {
 
   constructor(squad) {
@@ -15,7 +16,7 @@ export class SquadMovementAI {
     let posCol = 0;
     // first generate all the possible positions near the actually clicked position
     for(var unit of this.squad.units) {
-      unit.MoveAI.findPathTo(map, map.tileCoordsToWorldCoords({ x: x + posRow, y: y + posCol }), addToQueue);
+      unit.AIList[UNIT_MOVEMENT_AI_POSITION].findPath(map, map.tileCoordsToWorldCoords({ x: x + posRow, y: y + posCol }), addToQueue);
 
       posRow = (++posRow) % squareSize;
       posCol = posRow === 0 ? posCol + 1 : posCol;
