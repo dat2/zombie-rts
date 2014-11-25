@@ -21,16 +21,17 @@ export default class Unit extends Entity {
     this.addAI(new UnitMovementAI({ unit: this }));
   }
 
-  // select and render the selected rectangle
-  select() {
-    this.selected = true;
-    this.renderSelected();
+  set selected(newVal) {
+    this._selected = newVal;
+    if(this._selected) {
+      this.renderSelected();
+    } else {
+      this.selectedGraphics.destroy();
+    }
   }
 
-  // deselect the unit, and destroy the selected rectangle
-  deselect() {
-    this.selected = false;
-    this.selectedGraphics.destroy();
+  get selected() {
+    return this._selected;
   }
 
   update() {
