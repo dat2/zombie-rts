@@ -1,3 +1,5 @@
+import { clamp } from 'util';
+
 export default class Entity {
 
   // x, y are tile coordinates, not pixel coordinates
@@ -18,29 +20,18 @@ export default class Entity {
 
     // not physics or visual related variables
     this.maxHealth = maxHealth;
-    this.health = this.maxHealth;
+    this._health = this.maxHealth;
     this.dead = false;
 
     this.AIList = [];
   }
 
+  set health(newVal) {
+    this.health = clamp(this.maxHealth, clamp(newVal, 0));
+  }
+
   setDirection({ x, y }) {
     this.direction = { x, y };
-  }
-
-  decreaseHealth(value) {
-    this.health -= value;
-    if(this.health < 0) {
-      this.health = 0;
-      this.dead = true;
-    }
-  }
-
-  increaseHealth(value) {
-    this.health += value;
-    if(this.health > this.maxHealth) {
-      this.health = this.maxHealth;
-    }
   }
 
   // TODO decide update lifecycle for AI
