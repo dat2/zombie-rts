@@ -1,5 +1,7 @@
 import StateMachine from 'AI/StateMachine';
 
+var _ = require('lodash');
+
 const STATE_MOVING = 1;
 const STATE_IDLE = 2;
 const STATE_COLLIDING = 3;
@@ -52,8 +54,7 @@ export default class MovementAI {
 
   calculateStartPos(appendToQueue = false) {
     // calculate the start position
-    let { x, y } = this.entity.sprite;
-    let startPos = { x, y };
+    let startPos = _.pick(this.entity.sprite, 'x', 'y');
 
     // appendToQueue lets you add to the end of the queue if you want to patrol
     if(appendToQueue && this.pathQueue.length > 0) {

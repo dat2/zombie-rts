@@ -1,4 +1,7 @@
 const CAMERA_MOVEMENT_SPEED = 300;
+
+var containsPoint = (rect, point) => Phaser.Rectangle.containsPoint(rect, point);
+
 export default class CameraHandler {
   constructor({entityManager, map, cursors, cameraProperties, edgePixels}) {
     this.entityManager = entityManager;
@@ -48,27 +51,19 @@ export default class CameraHandler {
 
   registerHorizontalKeys() {
     // move horizontally
-    this.cursors.left.onDown.add( () => {
-      this.moveHorizontal(-CAMERA_MOVEMENT_SPEED);
-    });
-    this.cursors.right.onDown.add( () => {
-      this.moveHorizontal(CAMERA_MOVEMENT_SPEED);
-    });
+    this.cursors.left.onDown.add(this.moveHorizontal.bind(this, -CAMERA_MOVEMENT_SPEED));
+    this.cursors.right.onDown.add(this.moveHorizontal.bind(this, CAMERA_MOVEMENT_SPEED));
 
     // stop moving horizontally when the arrow keys are lifted
-    let xLambda = () => { this.moveHorizontal(0); };
+    let xLambda = () => { this.moveHorizontal(); };
     this.cursors.left.onUp.add(xLambda);
     this.cursors.right.onUp.add(xLambda);
   }
 
   registerVerticalKeys() {
     // move vertically
-    this.cursors.up.onDown.add( () => {
-      this.moveVertical(-CAMERA_MOVEMENT_SPEED);
-    });
-    this.cursors.down.onDown.add( () => {
-      this.moveVertical(CAMERA_MOVEMENT_SPEED);
-    });
+    this.cursors.up.onDown.add(this.moveVertical.bind(this, -CAMERA_MOVEMENT_SPEED));
+    this.cursors.down.onDown.add(this.moveVertical.bind(this, CAMERA_MOVEMENT_SPEED));
 
     // stop moving vertically when the arrow keys are lifted
     let yLambda = () => { this.moveVertical(0); };
@@ -85,8 +80,7 @@ export default class CameraHandler {
 
   // when the mouse is outside the horizontal dead zone, the camera should move
   registerHorizontalMovement(pointer) {
-    let outsideHorizontalRect = !Phaser.Rectangle.containsPoint(this.deadHorizontalRect, pointer);
-    if(outsideHorizontalRect) {
+    if(!containsPoint(this.deadHorizontalRect, pointer)) {
       this.moveHorizontal(CAMERA_MOVEMENT_SPEED * (pointer.x > this.deadHorizontalRect.centerX ? 1 : -1));
     } else {
       this.moveHorizontal(0);
@@ -95,8 +89,7 @@ export default class CameraHandler {
 
   // when the mouse is outside the vertical zone, the camera should move
   registerVerticalMovement(pointer) {
-    let outsideVerticalRect = !Phaser.Rectangle.containsPoint(this.deadVerticalRect, pointer);
-    if(outsideVerticalRect) {
+    if(!containsPoint(this.deadVerticalRect, pointer)) {
       this.moveVertical(CAMERA_MOVEMENT_SPEED * (pointer.y > this.deadVerticalRect.centerY ? 1 : -1));
     } else {
       this.moveVertical(0);
