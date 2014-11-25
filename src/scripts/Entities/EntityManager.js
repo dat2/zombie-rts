@@ -1,10 +1,10 @@
+// ES6 is WebKit context
 import Unit from 'Units/Unit';
 import Zombie from 'Zombies/Zombie';
 import Camera from 'Camera/Camera';
-var _ = require('lodash');
 
-var getValueFromKey = (obj, key) => obj[key];
-var objectToArray = (obj) => _.keys(obj).map(getValueFromKey.bind(null, obj));
+// require is node.js context
+var _ = require('lodash');
 
 export default class EntityManager {
   constructor() {
@@ -29,7 +29,7 @@ export default class EntityManager {
   }
 
   get units() {
-    return objectToArray(this._entities.units);
+    return _.values(this._entities.units);
   }
 
   set units() {
@@ -37,19 +37,19 @@ export default class EntityManager {
   }
 
   get zombies() {
-    return objectToArray(this._entities.zombies);
+    return _.values(this._entities.zombies);
   }
 
   set zombies() {
     return;
   }
 
-  createUnit(unitProperties, unitId = this.generateUID('unit_')) {
+  createUnit(unitProperties, unitId = _.uniqueId('unit_')) {
     this._entities.units[unitId] = new Unit(unitProperties);
     return unitId;
   }
 
-  createZombie(zombieProperties, zombieId = this.generateUID('zombie_')) {
+  createZombie(zombieProperties, zombieId = _.uniqueId('zombie_')) {
     this._entities.zombies[zombieId] = new Zombie(zombieProperties);
     return zombieId;
   }
@@ -70,10 +70,6 @@ export default class EntityManager {
 
   getEntity(entityId) {
     return this._entities[entityId];
-  }
-
-  generateUID(prefix) {
-    return _.uniqueId(prefix);
   }
 
   update(map) {
