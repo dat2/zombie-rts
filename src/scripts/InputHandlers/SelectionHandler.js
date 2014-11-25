@@ -1,5 +1,22 @@
+// WebKit context
 import Unit from 'Units/Unit';
 import Squad from 'Units/Squad';
+import { ifExpression } from 'util';
+
+// node.js context
+var _ = require('lodash');
+
+var selectUnits = (unit) => unit.selected = true;
+var isSelected = (unit) => unit.selected;
+
+var deselectUnits = (unit) => unit.selected = false;
+
+var unitInRect = _.curry((rect, unit) => Phaser.Rectangle.intersects(rect, unit.rect));
+
+var isLeftButton = (pointer) => pointer.button === Phaser.Mouse.LEFT_BUTTON;
+var isRightButton = (pointer) => pointer.button === Phaser.Mouse.RIGHT_BUTTON;
+
+var worldXYtoXY = ({ worldX, worldY }) => { return { x: worldX, y: worldY }; };
 
 export default class SelectionHandler {
   constructor({entityManager, map}) {
@@ -32,57 +49,40 @@ export default class SelectionHandler {
       if(!this.dragging) {
         return;
       }
-
-      let { x: sx, y: sy } = this.dragStartPos;
-      let { worldX: mx, worldY: my } = pointer;
-
-      this.setSelectionRectDimensions({ mx, my }, { sx, sy });
-
+      this.setSelectionRectDimensions(worldXYtoXY(pointer), this.dragStartPos);
       this.selectEntitiesInSelectionRect();
       this.deselectEntitiesOutsideSelectionRect();
-
       this.drawSelectionRect();
     });
   }
 
-  setSelectionRectDimensions({ mx, my }, { sx, sy }) {
+  setSelectionRectDimensions(mouse, start) {
     // set the width accordingly
-    this.selectionRect.width = Math.abs(mx - this.selectionRect.x);
-    this.selectionRect.height = Math.abs(my - this.selectionRect.y);
+    let xs = [ mouse.x, start.x ];
+    let ys = [ mouse.y, start.y ];
 
-    // if we moved left of the original start position, we need to move the
-    // rect left to ensure that width > 0
-    if(mx < sx) {
-      this.selectionRect.width = sx - mx;
-      this.selectionRect.x = mx;
-    }
-    if(my < sy) {
-      this.selectionRect.height = sy - my;
-      this.selectionRect.y = my;
-    }
+    let minX = _.min(xs);
+    let minY = _.min(ys);
+    [ this.selectionRect.x,
+      this.selectionRect.y ] = [ minX, minY ];
+
+    let maxX = _.max(xs);
+    let maxY = _.max(ys);
+
+    [ this.selectionRect.width,
+      this.selectionRect.height ] = [ maxX - minX, maxY - minY ];
   }
 
   selectEntitiesInSelectionRect() {
     // set each unit inside the rectangle's selected property to true
-    let units = this.entityManager.filterEntities( (entity) => {
-      //prevent the camera from being detected
-      return entity instanceof Unit &&
-        Phaser.Rectangle.intersects(this.selectionRect, entity.rect);
-    });
-    units.forEach( (entity) => {
-      entity.select();
-    });
+    _.filter(this.entityManager.units, unitInRect(this.selectionRect) )
+      .forEach( selectUnits );
   }
 
   deselectEntitiesOutsideSelectionRect() {
     //deselect entities that do not intersect the rectangle
-    let units = this.entityManager.filterEntities( (entity) => {
-      return entity instanceof Unit &&
-        !Phaser.Rectangle.intersects(this.selectionRect, entity.rect);
-    });
-    units.forEach( (entity) => {
-      entity.deselect();
-    });
+    _.reject(this.entityManager.units, unitInRect(this.selectionRect))
+      .forEach( deselectUnits );
   }
 
   drawSelectionRect() {
@@ -97,36 +97,34 @@ export default class SelectionHandler {
   }
 
   registerMouseDownCallback() {
-    // start dragging on click
-    game.input.onDown.add( (pointer, mouse) => {
-      // left click, start dragging selection box
-      if(game.input.mouse.button === Phaser.Mouse.LEFT_BUTTON) {
-        this.handleLeftMouseButtonDown(pointer, mouse);
-      } else if(game.input.mouse.button === Phaser.Mouse.RIGHT_BUTTON) {
-        this.handleRightMouseButtonDown(pointer, mouse);
-      }
-    });
+    game.input.onDown.add(
+      ifExpression(this,
+        isLeftButton,
+        this.handleLeftMouseButtonDown,
+        ifExpression(this,
+          isRightButton,
+          this.handleRightMouseButtonDown
+        )
+    ));
   }
 
   handleLeftMouseButtonDown(pointer, mouse) {
     // remove selected
-    this.selectedUnits.forEach( (entity) => {
-      entity.deselect();
-    });
+    this.selectedUnits.forEach(deselectUnits);
 
     // start dragging
     this.dragging = true;
-    let { worldX: x, worldY: y } = pointer;
-    this.selectionRect.x = x;
-    this.selectionRect.y = y;
 
-    this.dragStartPos = { x, y };
+    let pnt = worldXYtoXY(pointer);
+    let { x, y } = pnt;
+    [ this.selectionRect.x, this.selectionRect.y ] = [ x, y ];
+
+    this.dragStartPos = pnt;
   }
 
   handleRightMouseButtonDown(pointer, mouse) {
     // right click, move units to the point
-    let { worldX: x, worldY: y } = pointer;
-    let worldPos = { x, y };
+    let worldPos = worldXYtoXY(pointer);
 
     // TODO move this later
     let squad = new Squad(this.selectedUnits.length, this.selectedUnits);
@@ -141,8 +139,7 @@ export default class SelectionHandler {
         this.selectionRect.width = 0;
         this.selectionRect.height = 0;
 
-        this.selectedUnits =
-          this.entityManager.filterEntities( (entity) => entity.selected );
+        this.selectedUnits = _.filter(this.entityManager.units, isSelected );
       }
       this.selectionRectGraphics.destroy();
     });
