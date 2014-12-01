@@ -1,9 +1,9 @@
 //global variables
-import BootState from 'States/boot';
-import PreloadState from 'States/preload';
-import MenuState from 'States/menu';
-import PlayState from 'States/play';
-import GameOverState from 'States/gameover';
+import BootState from 'States/BootState';
+import PreloadState from 'States/PreloadState';
+import MenuState from 'States/MenuState';
+import PlayState from 'States/PlayState';
+import GameOverState from 'States/GameOverState';
 
 const { name, window: { width, height } } = require('../package');
 
